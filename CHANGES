@@ -1,0 +1,28 @@
+2009-08-25 (0.2.4)
+    * Included Jaro and Jaro-Winkler metrics implementation of Kevin Ballard
+      <kevin@rapleaf.com>. Thanks a lot.
+    * Made the extension compile under Ruby 1.9.
+2006-06-25 (0.2.3)
+    * Fixed agrep.rb to use the new API.
+2005-10-11 (0.2.2)
+    * Fixed a typo in extconf.rb that prohibitted compiling on
+    non-gcc compilers.
+2005-09-12 (0.2.1)
+    * Bugfix: Wrong type for pattern length corrected. Thanks to David
+    Heinemeier Hansson for reporting it.
+2005-06-01 (0.2.0)
+    * Major changes in API and implementation:
+      Now the Levenshtein edit distance, Sellers edit distance, the Hamming
+      distance, the longest common subsequence length, the longest common
+      substring length, and the pair distance metric can be computed.
+2005-01-20 (0.1.4)
+    * Better argument handling in initialization method
+    * Minor changes in Rakefile and README.en
+2004-09-27 (0.1.3)
+    * Rakefile and gem support added.
+2004-09-24 (0.1.2)
+    * Uses Test::Unit for regression tests now.
+2002-04-21 (0.1.1)
+    * Minor changes: documentation, more test cases and exceptions.
+2002-03-14 (0.1.0)
+    * Initial Version

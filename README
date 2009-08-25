@@ -1,0 +1,25 @@
+Installation
+============
+
+Just type into the command line as root:
+
+# ruby install.rb
+
+If you have installed rake (rake.rubyforge.org), you can also type:
+
+# rake install
+
+To install this extension as a gem type
+
+# gem install amatch
+
+Author
+======
+
+Florian Frank <flori@ping.de>
+
+License
+=======
+
+GNU General Public License, Version 2 (GPLv2)
+
