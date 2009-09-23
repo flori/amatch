@@ -1,3 +1,5 @@
+2009-09-23 (0.2.5)
+    * Added lib to gem's require_paths.
 2009-08-25 (0.2.4)
     * Included Jaro and Jaro-Winkler metrics implementation of Kevin Ballard
       <kevin@rapleaf.com>. Thanks a lot.

@@ -67,7 +67,7 @@ EOF
 
     s.extensions << "ext/extconf.rb"
 
-    s.require_path = 'ext'
+    s.require_paths << 'ext' << 'lib'
 
     s.bindir = "bin"
     s.executables = ["agrep.rb"]
