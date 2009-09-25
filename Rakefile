@@ -17,7 +17,7 @@ MAKE        = ENV['MAKE'] || %w[gmake make].find { |c| system(c, '-v') }
 PKG_NAME    = 'amatch'
 PKG_VERSION = File.read('VERSION').chomp
 PKG_FILES   = FileList["**/*"].exclude(/^(pkg|coverage|doc|tmp)/)
-PKG_DOC_FILES = [ "ext/amatch.c" ].concat(Dir['lib/**/*.rb']) << 'doc-main.txt'
+PKG_DOC_FILES = [ "ext/amatch.c" ].concat(Dir['lib/**/*.rb']) << 'README'
 
 desc "Run unit tests"
 task :test => :compile_ext do
@@ -50,7 +50,7 @@ end
 
 desc "Build the documentation"
 task :doc do
-  sh "rdoc -m doc-main.txt -t '#{PKG_NAME} - Approximate Matching' #{PKG_DOC_FILES * ' '}"
+  sh "rdoc -m README -t '#{PKG_NAME} - Approximate Matching' #{PKG_DOC_FILES * ' '}"
 end
 
 if defined?(Gem) and defined?(Rake::GemPackageTask) and
@@ -79,7 +79,7 @@ EOF
 
       s.has_rdoc = true
       s.extra_rdoc_files.concat #{PKG_DOC_FILES.sort.inspect}
-      s.rdoc_options << '--main' << 'doc-main.txt' <<
+      s.rdoc_options << '--main' << 'README' <<
         '--title' << "#{PKG_NAME} - Approximate Matching"
       s.test_files.concat Dir['tests/test_*.rb']
 

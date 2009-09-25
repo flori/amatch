@@ -8,7 +8,7 @@ Several algorithms can be used to do this, and it's also possible to compute a
 similarity metric number between 0.0 and 1.0 for two given strings.
 EOF
 
-      s.files = ["CHANGES", "COPYING", "README", "Rakefile", "VERSION", "amatch.gemspec", "bin", "bin/agrep.rb", "ext", "ext/amatch.c", "ext/common.h", "ext/extconf.rb", "ext/pair.c", "ext/pair.h", "install.rb", "lib", "lib/amatch", "lib/amatch.so", "lib/amatch/version.rb", "tests", "tests/test_hamming.rb", "tests/test_jaro.rb", "tests/test_jaro_winkler.rb", "tests/test_levenshtein.rb", "tests/test_longest_subsequence.rb", "tests/test_longest_substring.rb", "tests/test_pair_distance.rb", "tests/test_sellers.rb"]
+      s.files = ["CHANGES", "COPYING", "README", "Rakefile", "VERSION", "amatch.gemspec", "bin", "bin/agrep.rb", "ext", "ext/amatch.c", "ext/common.h", "ext/extconf.rb", "ext/pair.c", "ext/pair.h", "install.rb", "lib", "lib/amatch", "lib/amatch/version.rb", "tests", "tests/test_hamming.rb", "tests/test_jaro.rb", "tests/test_jaro_winkler.rb", "tests/test_levenshtein.rb", "tests/test_longest_subsequence.rb", "tests/test_longest_substring.rb", "tests/test_pair_distance.rb", "tests/test_sellers.rb"]
 
       s.extensions << "ext/extconf.rb"
 
@@ -19,8 +19,8 @@ EOF
       s.default_executable = "agrep.rb"
 
       s.has_rdoc = true
-      s.extra_rdoc_files.concat ["doc-main.txt", "ext/amatch.c", "lib/amatch/version.rb"]
-      s.rdoc_options << '--main' << 'doc-main.txt' <<
+      s.extra_rdoc_files.concat ["README", "ext/amatch.c", "lib/amatch/version.rb"]
+      s.rdoc_options << '--main' << 'README' <<
         '--title' << "amatch - Approximate Matching"
       s.test_files.concat Dir['tests/test_*.rb']
 
