@@ -690,7 +690,10 @@ static VALUE LongestSubstring_similar(General *amatch, VALUE string)
         }                                                                           \
         t = t / 2;                                                                  \
         result = (((double)m)/a_len + ((double)m)/b_len + ((double)(m-t))/m)/3.0;   \
-    }
+    }                                                                               \
+    free(l[0]);                                                                     \
+    free(l[1]);
+
 
 #define LOWERCASE_STRINGS                                       \
      char *ying = ALLOC_N(char, a_len);                         \
