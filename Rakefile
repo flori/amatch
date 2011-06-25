@@ -85,7 +85,7 @@ EOF
 
       s.author = "Florian Frank"
       s.email = "flori@ping.de"
-      s.homepage = "http://amatch.rubyforge.org"
+      s.homepage = "http://flori.github.com/#{PKG_NAME}"
       s.rubyforge_project = '#{PKG_NAME}'
     end
   GEM
