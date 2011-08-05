@@ -89,8 +89,8 @@ static VALUE type##_iterate_strings(type *amatch, VALUE strings,    \
     if (TYPE(strings) == T_STRING) {                                \
         return match_function(amatch, strings);                     \
     } else {                                                        \
-        Check_Type(strings, T_ARRAY);                               \
         int i;                                                      \
+        Check_Type(strings, T_ARRAY);                               \
         VALUE result = rb_ary_new2(RARRAY_LEN(strings));            \
         for (i = 0; i < RARRAY_LEN(strings); i++) {                 \
             VALUE string = rb_ary_entry(strings, i);                \
@@ -1102,8 +1102,8 @@ static VALUE rb_PairDistance_match(int argc, VALUE *argv, VALUE self)
     if (TYPE(strings) == T_STRING) {
         result = PairDistance_match(amatch, strings, regexp, use_regexp);
     } else {
-        Check_Type(strings, T_ARRAY);
         int i;
+        Check_Type(strings, T_ARRAY);
         result = rb_ary_new2(RARRAY_LEN(strings));
         for (i = 0; i < RARRAY_LEN(strings); i++) {
             VALUE string = rb_ary_entry(strings, i);
