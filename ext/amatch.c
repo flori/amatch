@@ -696,10 +696,11 @@ static VALUE LongestSubstring_similar(General *amatch, VALUE string)
 
 
 #define LOWERCASE_STRINGS                                       \
-     char *ying = ALLOC_N(char, a_len);                         \
+     char *ying, *yang;                                         \
+     ying = ALLOC_N(char, a_len);                               \
      MEMCPY(ying, a_ptr, char, a_len);                          \
      a_ptr = ying;                                              \
-     char *yang = ALLOC_N(char, b_len);                         \
+     yang = ALLOC_N(char, b_len);                               \
      MEMCPY(yang, b_ptr, char, b_len);                          \
      b_ptr = yang;                                              \
      for (i = 0; i < a_len; i++) {                              \
