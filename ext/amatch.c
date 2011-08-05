@@ -90,8 +90,9 @@ static VALUE type##_iterate_strings(type *amatch, VALUE strings,    \
         return match_function(amatch, strings);                     \
     } else {                                                        \
         int i;                                                      \
+        VALUE result;                                               \
         Check_Type(strings, T_ARRAY);                               \
-        VALUE result = rb_ary_new2(RARRAY_LEN(strings));            \
+        result = rb_ary_new2(RARRAY_LEN(strings));                  \
         for (i = 0; i < RARRAY_LEN(strings); i++) {                 \
             VALUE string = rb_ary_entry(strings, i);                \
             if (TYPE(string) != T_STRING) {                         \
