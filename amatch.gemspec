@@ -7,7 +7,10 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = [%q{Florian Frank}]
   s.date = %q{2011-08-05}
-  s.description = %q{Library to tail files in Ruby}
+  s.description = %q{Amatch is a library for approximate string matching and searching in strings.
+Several algorithms can be used to do this, and it's also possible to compute a
+similarity metric number between 0.0 and 1.0 for two given strings.
+}
   s.email = %q{flori@ping.de}
   s.executables = [%q{agrep.rb}]
   s.extensions = [%q{ext/extconf.rb}]

@@ -13,7 +13,6 @@ Amatch is a library for approximate string matching and searching in strings.
 Several algorithms can be used to do this, and it's also possible to compute a
 similarity metric number between 0.0 and 1.0 for two given strings.
 EOT
-  description 'Library to tail files in Ruby'
   executables << 'agrep.rb'
   bindir      'bin'
   test_dir    'tests'
