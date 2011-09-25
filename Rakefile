@@ -20,7 +20,8 @@ EOT
   title       "#{name.camelize} - Approximate Matching"
   readme      'README.rdoc'
   require_paths %w[lib ext]
-  dependency  'spruz', '~>0.2'
+  dependency             'tins',      '~>0.3'
+  development_dependency 'test-unit', '~>2.3'
 
   install_library do
     libdir = CONFIG["sitelibdir"]
