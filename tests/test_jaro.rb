@@ -1,5 +1,5 @@
 require 'test/unit'
-require File.dirname(__FILE__) + "/../ext/amatch"
+require 'amatch'
 
 class TestJaro < Test::Unit::TestCase
   include Amatch
