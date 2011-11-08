@@ -55,16 +55,16 @@ VALUE rb_##klass##_new(VALUE klass2, VALUE pattern)                     \
 static void rb_##klass##_free(type *amatch)                 \
 {                                                           \
     MEMZERO(amatch->pattern, char, amatch->pattern_len);    \
-    free(amatch->pattern);                                  \
+    xfree(amatch->pattern);                                  \
     MEMZERO(amatch, type, 1);                               \
-    free(amatch);                                           \
+    xfree(amatch);                                           \
 }
 
 #define DEF_PATTERN_ACCESSOR(type)                              \
 static void type##_pattern_set(type *amatch, VALUE pattern)     \
 {                                                               \
     Check_Type(pattern, T_STRING);                              \
-    free(amatch->pattern);                                      \
+    xfree(amatch->pattern);                                      \
     amatch->pattern_len = RSTRING_LEN(pattern);                 \
     amatch->pattern = ALLOC_N(char, amatch->pattern_len);       \
     MEMCPY(amatch->pattern, RSTRING_PTR(pattern), char,         \
@@ -271,8 +271,8 @@ static VALUE Levenshtein_match(General *amatch, VALUE string)
 
     result = INT2FIX(v[p][b_len]);
 
-    free(v[0]);
-    free(v[1]);
+    xfree(v[0]);
+    xfree(v[1]);
 
     return result;
 }
@@ -303,8 +303,8 @@ static VALUE Levenshtein_similar(General *amatch, VALUE string)
     } else {
         result = rb_float_new(1.0 - ((double) v[p][b_len]) / a_len);
     }
-    free(v[0]);
-    free(v[1]);
+    xfree(v[0]);
+    xfree(v[1]);
     return result;
 }
 
@@ -332,8 +332,8 @@ static VALUE Levenshtein_search(General *amatch, VALUE string)
 
     result = INT2FIX(min);
 
-    free(v[0]);
-    free(v[1]);
+    xfree(v[0]);
+    xfree(v[1]);
     
     return result;
 }
@@ -385,8 +385,8 @@ static VALUE Sellers_match(Sellers *amatch, VALUE string)
     COMPUTE_SELLERS_DISTANCE
 
     result = rb_float_new(v[p][b_len]);
-    free(v[0]);
-    free(v[1]);
+    xfree(v[0]);
+    xfree(v[1]);
     return result;
 }
 
@@ -430,8 +430,8 @@ static VALUE Sellers_similar(Sellers *amatch, VALUE string)
     } else {
         result = rb_float_new(1.0 - v[p][b_len] / (a_len * max_weight));
     }
-    free(v[0]);
-    free(v[1]);
+    xfree(v[0]);
+    xfree(v[1]);
     return result;
 }
 
@@ -457,8 +457,8 @@ static VALUE Sellers_search(Sellers *amatch, VALUE string)
         if (v[p][i] < min) min = v[p][i];
     }
     result = rb_float_new(min);
-    free(v[0]);
-    free(v[1]);
+    xfree(v[0]);
+    xfree(v[1]);
     
     return result;
 }
@@ -564,8 +564,8 @@ static VALUE Hamming_similar(General *amatch, VALUE string)
         c = (c + 1) % 2;                                    \
     }                                                       \
     result = l[p][0];                                       \
-    free(l[0]);                                             \
-    free(l[1]);
+    xfree(l[0]);                                             \
+    xfree(l[1]);
 
 
 static VALUE LongestSubsequence_match(General *amatch, VALUE string)
@@ -619,8 +619,8 @@ static VALUE LongestSubsequence_similar(General *amatch, VALUE string)
         p = c;                                              \
         c = (c + 1) % 2;                                    \
     }                                                       \
-    free(l[0]);                                             \
-    free(l[1]);
+    xfree(l[0]);                                             \
+    xfree(l[1]);
 
 static VALUE LongestSubstring_match(General *amatch, VALUE string)
 {
@@ -692,8 +692,8 @@ static VALUE LongestSubstring_similar(General *amatch, VALUE string)
         t = t / 2;                                                                  \
         result = (((double)m)/a_len + ((double)m)/b_len + ((double)(m-t))/m)/3.0;   \
     }                                                                               \
-    free(l[0]);                                                                     \
-    free(l[1]);
+    xfree(l[0]);                                                                     \
+    xfree(l[1]);
 
 
 #define LOWERCASE_STRINGS                                       \
