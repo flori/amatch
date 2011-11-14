@@ -15,6 +15,10 @@ class TestPairDistance < Test::Unit::TestCase
     @long     = PairDistance.new('A' * 160)
   end
 
+  def test_alternative_constant
+    assert_equal PairDistance, DiceCoefficient
+  end
+
   def test_empty
     assert_in_delta 1, @empty.match(''), D
     assert_in_delta 0, @empty.match('not empty'), D
