@@ -1134,10 +1134,19 @@ static VALUE rb_PairDistance_match(int argc, VALUE *argv, VALUE self)
  * either a String or an Array of Strings. The returned <code>results</code>
  * are either a Float or an Array of Floats respectively.
  */
-static VALUE rb_str_pair_distance_similar(VALUE self, VALUE strings)
+static VALUE rb_str_pair_distance_similar(int argc, VALUE *argv, VALUE self)
 {
-    VALUE amatch = rb_PairDistance_new(rb_cPairDistance, self);
-    return rb_PairDistance_match(1, &strings, amatch);
+    VALUE amatch, string, regexp = Qnil;
+    rb_scan_args(argc, argv, "11",  &string, &regexp);
+    amatch = rb_PairDistance_new(rb_cPairDistance, self);
+    if (NIL_P(regexp)) {
+        return rb_PairDistance_match(1, &string, amatch);
+    } else {
+        VALUE *args = alloca(2);
+        args[0] = string;
+        args[1] = regexp;
+        return rb_PairDistance_match(2, args, amatch);
+    }
 }
 
 /* 
@@ -1593,7 +1602,7 @@ void Init_amatch()
     rb_define_method(rb_cPairDistance, "pattern=", rb_PairDistance_pattern_set, 1);
     rb_define_method(rb_cPairDistance, "match", rb_PairDistance_match, -1);
     rb_define_alias(rb_cPairDistance, "similar", "match");
-    rb_define_method(rb_cString, "pair_distance_similar", rb_str_pair_distance_similar, 1);
+    rb_define_method(rb_cString, "pair_distance_similar", rb_str_pair_distance_similar, -1);
 
     /* Longest Common Subsequence */
     rb_cLongestSubsequence = rb_define_class_under(rb_mAmatch, "LongestSubsequence", rb_cObject);

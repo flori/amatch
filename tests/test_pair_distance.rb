@@ -55,6 +55,8 @@ class TestPairDistance < Test::Unit::TestCase
     assert_in_delta 0.6,        @single.match('test aaa bbb'), D
     assert_in_delta 0.6,        @single.match('bbb aaa test'), D
     assert_in_delta 0.8571428,  @single.pattern.pair_distance_similar('atest'), D
+    assert_in_delta 1.0,  @france.pattern.pair_distance_similar('of france, republic', /[, ]+/), D
+    assert_in_delta 0.9230769,  @france.pattern.pair_distance_similar('of france, republik', /[, ]+/), D
   end
 
   def test_csv
