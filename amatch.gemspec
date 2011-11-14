@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = "amatch"
-  s.version = "0.2.8"
+  s.version = "0.2.9"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Florian Frank"]
@@ -11,8 +11,8 @@ Gem::Specification.new do |s|
   s.email = "flori@ping.de"
   s.executables = ["agrep.rb"]
   s.extensions = ["ext/extconf.rb"]
-  s.extra_rdoc_files = ["README.rdoc", "lib/amatch/version.rb", "ext/amatch.c", "ext/pair.c"]
-  s.files = [".gitignore", ".travis.yml", "CHANGES", "COPYING", "Gemfile", "README.rdoc", "Rakefile", "VERSION", "amatch.gemspec", "bin/agrep.rb", "ext/amatch.c", "ext/common.h", "ext/extconf.rb", "ext/pair.c", "ext/pair.h", "install.rb", "lib/amatch/.keep", "lib/amatch/version.rb", "tests/test_hamming.rb", "tests/test_jaro.rb", "tests/test_jaro_winkler.rb", "tests/test_levenshtein.rb", "tests/test_longest_subsequence.rb", "tests/test_longest_substring.rb", "tests/test_pair_distance.rb", "tests/test_sellers.rb"]
+  s.extra_rdoc_files = ["README.rdoc", "lib/amatch/polite.rb", "lib/amatch/rude.rb", "lib/amatch/version.rb", "lib/amatch.rb", "ext/amatch_ext.c", "ext/pair.c"]
+  s.files = [".gitignore", ".travis.yml", "CHANGES", "COPYING", "Gemfile", "README.rdoc", "Rakefile", "VERSION", "amatch.gemspec", "bin/agrep.rb", "ext/amatch_ext.c", "ext/common.h", "ext/extconf.rb", "ext/pair.c", "ext/pair.h", "install.rb", "lib/amatch.rb", "lib/amatch/.keep", "lib/amatch/polite.rb", "lib/amatch/rude.rb", "lib/amatch/version.rb", "tests/test_hamming.rb", "tests/test_jaro.rb", "tests/test_jaro_winkler.rb", "tests/test_levenshtein.rb", "tests/test_longest_subsequence.rb", "tests/test_longest_substring.rb", "tests/test_pair_distance.rb", "tests/test_sellers.rb"]
   s.homepage = "http://github.com/flori/amatch"
   s.rdoc_options = ["--title", "Amatch - Approximate Matching", "--main", "README.rdoc"]
   s.require_paths = ["lib", "ext"]

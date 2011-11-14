@@ -20,7 +20,7 @@
  */
 
 
-static VALUE rb_mAmatch, rb_cLevenshtein, rb_cSellers, rb_cHamming,
+static VALUE rb_mAmatch, rb_mAmatchStringMethods, rb_cLevenshtein, rb_cSellers, rb_cHamming,
              rb_cPairDistance, rb_cLongestSubsequence, rb_cLongestSubstring,
              rb_cJaro, rb_cJaroWinkler;
 
@@ -1551,10 +1551,11 @@ static VALUE rb_str_jarowinkler_similar(VALUE self, VALUE strings)
     return rb_JaroWinkler_match(amatch, strings);
 }
 
-void Init_amatch()
+void Init_amatch_ext()
 {
     rb_require("amatch/version");
     rb_mAmatch = rb_define_module("Amatch");
+    rb_mAmatchStringMethods = rb_define_module_under(rb_mAmatch, "StringMethods");
 
     /* Levenshtein */
     rb_cLevenshtein = rb_define_class_under(rb_mAmatch, "Levenshtein", rb_cObject);
@@ -1565,7 +1566,7 @@ void Init_amatch()
     rb_define_method(rb_cLevenshtein, "match", rb_Levenshtein_match, 1);
     rb_define_method(rb_cLevenshtein, "search", rb_Levenshtein_search, 1);
     rb_define_method(rb_cLevenshtein, "similar", rb_Levenshtein_similar, 1);
-    rb_define_method(rb_cString, "levenshtein_similar", rb_str_levenshtein_similar, 1);
+    rb_define_method(rb_mAmatchStringMethods, "levenshtein_similar", rb_str_levenshtein_similar, 1);
 
     /* Sellers */
     rb_cSellers = rb_define_class_under(rb_mAmatch, "Sellers", rb_cObject);
@@ -1592,7 +1593,7 @@ void Init_amatch()
     rb_define_method(rb_cHamming, "pattern=", rb_General_pattern_set, 1);
     rb_define_method(rb_cHamming, "match", rb_Hamming_match, 1);
     rb_define_method(rb_cHamming, "similar", rb_Hamming_similar, 1);
-    rb_define_method(rb_cString, "hamming_similar", rb_str_hamming_similar, 1);
+    rb_define_method(rb_mAmatchStringMethods, "hamming_similar", rb_str_hamming_similar, 1);
 
     /* Pair Distance Metric */
     rb_cPairDistance = rb_define_class_under(rb_mAmatch, "PairDistance", rb_cObject);
@@ -1602,7 +1603,7 @@ void Init_amatch()
     rb_define_method(rb_cPairDistance, "pattern=", rb_PairDistance_pattern_set, 1);
     rb_define_method(rb_cPairDistance, "match", rb_PairDistance_match, -1);
     rb_define_alias(rb_cPairDistance, "similar", "match");
-    rb_define_method(rb_cString, "pair_distance_similar", rb_str_pair_distance_similar, -1);
+    rb_define_method(rb_mAmatchStringMethods, "pair_distance_similar", rb_str_pair_distance_similar, -1);
 
     /* Longest Common Subsequence */
     rb_cLongestSubsequence = rb_define_class_under(rb_mAmatch, "LongestSubsequence", rb_cObject);
@@ -1612,7 +1613,7 @@ void Init_amatch()
     rb_define_method(rb_cLongestSubsequence, "pattern=", rb_General_pattern_set, 1);
     rb_define_method(rb_cLongestSubsequence, "match", rb_LongestSubsequence_match, 1);
     rb_define_method(rb_cLongestSubsequence, "similar", rb_LongestSubsequence_similar, 1);
-    rb_define_method(rb_cString, "longest_subsequence_similar", rb_str_longest_subsequence_similar, 1);
+    rb_define_method(rb_mAmatchStringMethods, "longest_subsequence_similar", rb_str_longest_subsequence_similar, 1);
 
     /* Longest Common Substring */
     rb_cLongestSubstring = rb_define_class_under(rb_mAmatch, "LongestSubstring", rb_cObject);
@@ -1622,7 +1623,7 @@ void Init_amatch()
     rb_define_method(rb_cLongestSubstring, "pattern=", rb_General_pattern_set, 1);
     rb_define_method(rb_cLongestSubstring, "match", rb_LongestSubstring_match, 1);
     rb_define_method(rb_cLongestSubstring, "similar", rb_LongestSubstring_similar, 1);
-    rb_define_method(rb_cString, "longest_substring_similar", rb_str_longest_substring_similar, 1);
+    rb_define_method(rb_mAmatchStringMethods, "longest_substring_similar", rb_str_longest_substring_similar, 1);
 
     /* Jaro */
     rb_cJaro = rb_define_class_under(rb_mAmatch, "Jaro", rb_cObject);
@@ -1634,7 +1635,7 @@ void Init_amatch()
     rb_define_method(rb_cJaro, "ignore_case=", rb_Jaro_ignore_case_set, 1);
     rb_define_method(rb_cJaro, "match", rb_Jaro_match, 1);
     rb_define_alias(rb_cJaro, "similar", "match");
-    rb_define_method(rb_cString, "jaro_similar", rb_str_jaro_similar, 1);
+    rb_define_method(rb_mAmatchStringMethods, "jaro_similar", rb_str_jaro_similar, 1);
 
     /* Jaro-Winkler */
     rb_cJaroWinkler = rb_define_class_under(rb_mAmatch, "JaroWinkler", rb_cObject);
@@ -1648,7 +1649,7 @@ void Init_amatch()
     rb_define_method(rb_cJaroWinkler, "scaling_factor=", rb_JaroWinkler_scaling_factor_set, 1);
     rb_define_method(rb_cJaroWinkler, "match", rb_JaroWinkler_match, 1);
     rb_define_alias(rb_cJaroWinkler, "similar", "match");
-    rb_define_method(rb_cString, "jarowinkler_similar", rb_str_jarowinkler_similar, 1);
+    rb_define_method(rb_mAmatchStringMethods, "jarowinkler_similar", rb_str_jarowinkler_similar, 1);
 
     id_split = rb_intern("split");
     id_to_f = rb_intern("to_f");

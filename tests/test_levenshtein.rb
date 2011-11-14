@@ -11,6 +11,10 @@ class TestLevenshtein < Test::Unit::TestCase
     @long     = Levenshtein.new('A' * 160)
   end
 
+  def test_version
+    assert_kind_of String, Amatch::VERSION
+  end
+
   def test_match
     assert_equal 4,     @simple.match('')
     assert_equal 0,     @simple.match('test')
