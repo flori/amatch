@@ -7,7 +7,7 @@ static int predict_length(VALUE tokens)
     int i, l, result;
     for (i = 0, result = 0; i < RARRAY_LEN(tokens); i++) {
         VALUE t = rb_ary_entry(tokens, i);
-        l = RSTRING_LEN(t) - 1;
+        l = (int) RSTRING_LEN(t) - 1;
         if (l > 0) result += l;
     }
     return result;

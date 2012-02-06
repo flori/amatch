@@ -55,17 +55,17 @@ VALUE rb_##klass##_new(VALUE klass2, VALUE pattern)                     \
 static void rb_##klass##_free(type *amatch)                 \
 {                                                           \
     MEMZERO(amatch->pattern, char, amatch->pattern_len);    \
-    xfree(amatch->pattern);                                  \
+    xfree(amatch->pattern);                                 \
     MEMZERO(amatch, type, 1);                               \
-    xfree(amatch);                                           \
+    xfree(amatch);                                          \
 }
 
 #define DEF_PATTERN_ACCESSOR(type)                              \
 static void type##_pattern_set(type *amatch, VALUE pattern)     \
 {                                                               \
     Check_Type(pattern, T_STRING);                              \
-    xfree(amatch->pattern);                                      \
-    amatch->pattern_len = RSTRING_LEN(pattern);                 \
+    xfree(amatch->pattern);                                     \
+    amatch->pattern_len = (int) RSTRING_LEN(pattern);           \
     amatch->pattern = ALLOC_N(char, amatch->pattern_len);       \
     MEMCPY(amatch->pattern, RSTRING_PTR(pattern), char,         \
         RSTRING_LEN(pattern));                                  \
@@ -147,21 +147,21 @@ VALUE function(VALUE self, VALUE value)                                 \
 #define OPTIMIZE_TIME                                   \
     if (amatch->pattern_len < RSTRING_LEN(string)) {    \
         a_ptr = amatch->pattern;                        \
-        a_len = amatch->pattern_len;                    \
+        a_len = (int) amatch->pattern_len;              \
         b_ptr = RSTRING_PTR(string);                    \
-        b_len = RSTRING_LEN(string);                    \
+        b_len = (int) RSTRING_LEN(string);              \
     } else {                                            \
         a_ptr = RSTRING_PTR(string);                    \
-        a_len = RSTRING_LEN(string);                    \
+        a_len = (int) RSTRING_LEN(string);              \
         b_ptr = amatch->pattern;                        \
-        b_len = amatch->pattern_len;                    \
+        b_len = (int) amatch->pattern_len;              \
     }
 
 #define DONT_OPTIMIZE                                   \
         a_ptr = amatch->pattern;                        \
-        a_len = amatch->pattern_len;                    \
+        a_len = (int) amatch->pattern_len;              \
         b_ptr = RSTRING_PTR(string);                    \
-        b_len = RSTRING_LEN(string);                    \
+        b_len = (int) RSTRING_LEN(string);              \
 
 /*
  * C structures of the Amatch classes
@@ -215,10 +215,10 @@ DEF_PATTERN_ACCESSOR(Jaro)
 DEF_ITERATE_STRINGS(Jaro)
 
 typedef struct JaroWinklerStruct {
-    char *pattern;
-    int   pattern_len;
-    int   ignore_case;
-    float scaling_factor;
+    char   *pattern;
+    int    pattern_len;
+    int    ignore_case;
+    double scaling_factor;
 } JaroWinkler;
 
 DEF_ALLOCATOR(JaroWinkler)
