@@ -69,7 +69,7 @@ class TestSellers < TestLevenshtein
     assert_in_delta 0.75, @simple.pattern.levenshtein_similar('est'), @d
   end
 
-  def test_similar
+  def test_similar2
     assert_in_delta 1, @empty.similar(''), @d
     assert_in_delta 0, @empty.similar('not empty'), @d
     assert_in_delta 0.0, @simple.similar(''), @d
