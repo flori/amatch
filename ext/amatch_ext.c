@@ -710,10 +710,6 @@ static VALUE LongestSubstring_similar(General *amatch, VALUE string)
          if (islower(b_ptr[i])) b_ptr[i] = toupper(b_ptr[i]);   \
      }
 
-#define FREE_STRINGS \
-     xfree(a_ptr);   \
-     xfree(b_ptr);
-
 static VALUE Jaro_match(Jaro *amatch, VALUE string)
 {
     char *a_ptr, *b_ptr;
@@ -730,7 +726,8 @@ static VALUE Jaro_match(Jaro *amatch, VALUE string)
     }
     COMPUTE_JARO
     if (amatch->ignore_case) {
-        FREE_STRINGS
+        xfree(a_ptr);
+        xfree(b_ptr);
     }
     return rb_float_new(result);
 }
@@ -764,7 +761,8 @@ static VALUE JaroWinkler_match(JaroWinkler *amatch, VALUE string)
     }
     result = result + n*amatch->scaling_factor*(1-result);
     if (amatch->ignore_case) {
-        FREE_STRINGS
+        xfree(a_ptr);
+        xfree(b_ptr);
     }
     return rb_float_new(result);
 }
