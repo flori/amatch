@@ -661,8 +661,8 @@ static VALUE LongestSubstring_similar(General *amatch, VALUE string)
     m = 0;                                                                          \
     for (i = 0; i < a_len; i++) {                                                   \
         low = (i > max_dist ? i - max_dist : 0);                                     \
-        high = (i + max_dist < b_len ? i + max_dist : b_len);                       \
-        for (j = low; j < high; j++) {                                              \
+        high = (i + max_dist < b_len ? i + max_dist : b_len - 1);                   \
+        for (j = low; j <= high; j++) {                                             \
             if (!l[1][j] && a_ptr[i] == b_ptr[j]) {                                 \
                 l[0][i] = 1;                                                        \
                 l[1][j] = 1;                                                        \
