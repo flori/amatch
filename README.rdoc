@@ -33,6 +33,7 @@ To install this extension as a gem type
  # gem install amatch
 
 == Examples
+~~~ruby
  require 'amatch'
  # => true
  include Amatch
@@ -116,7 +117,7 @@ To install this extension as a gem type
  # => 0.961904762046678
  "pattern language".jarowinkler_similar("language of patterns")
  # => 0.672222222222222
-
+~~~
 == Performance
 http://cs304915.userapi.com/v304915401/5c97/BAzazF5E4Fo.jpg
 
