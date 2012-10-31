@@ -117,6 +117,9 @@ To install this extension as a gem type
  "pattern language".jarowinkler_similar("language of patterns")
  # => 0.672222222222222
 
+== Performance
+![performance](http://cs304915.userapi.com/v304915401/5c97/BAzazF5E4Fo.jpg)
+
 == Author
 
 Florian Frank mailto:flori@ping.de
