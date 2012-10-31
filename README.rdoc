@@ -118,7 +118,7 @@ To install this extension as a gem type
  # => 0.672222222222222
 
 == Performance
-![performance](http://cs304915.userapi.com/v304915401/5c97/BAzazF5E4Fo.jpg)
+http://cs304915.userapi.com/v304915401/5c97/BAzazF5E4Fo.jpg
 
 == Author
 
