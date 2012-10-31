@@ -1,6 +1,6 @@
-= amatch - Approximate Matching Extension for Ruby
+# amatch - Approximate Matching Extension for Ruby
 
-== Description
+## Description
 
 This is a collection of classes that can be used for Approximate
 matching, searching, and comparing of Strings. They implement algorithms
@@ -8,31 +8,35 @@ that compute the Levenshtein edit distance, Sellers edit distance, the
 Hamming distance, the longest common subsequence length, the longest common
 substring length, the pair distance metric, the Jaro-Winkler metric.
 
-== Download
+## Download
 
 The latest version of <b>amatch</b> can be found at
 
-* http://rubyforge.org/frs/?group_id=390
+* <http://rubyforge.org/frs/?group_id=390>
 
 Online Documentation should be located at
 
-* http://amatch.rubyforge.org
+* <http://amatch.rubyforge.org>
 
-== Installation
+## Installation
 
 Just type into the command line as root:
 
- # ruby install.rb
+`ruby install.rb`
 
 If you have installed rake (rake.rubyforge.org), you can also type:
 
- # rake install
+`rake install`
 
 To install this extension as a gem type
 
- # gem install amatch
+`gem install amatch`
 
+<<<<<<< HEAD:README.rdoc
 == Examples
+=======
+## Examples
+>>>>>>> Added markdown README for ruby highlighting:README.md
 ~~~ruby
  require 'amatch'
  # => true
@@ -118,14 +122,15 @@ To install this extension as a gem type
  "pattern language".jarowinkler_similar("language of patterns")
  # => 0.672222222222222
 ~~~
-== Performance
-http://cs304915.userapi.com/v304915401/5c97/BAzazF5E4Fo.jpg
 
-== Author
+## Performance
+![performance](http://cs304915.userapi.com/v304915401/5c97/BAzazF5E4Fo.jpg)
 
-Florian Frank mailto:flori@ping.de
+## Author
 
-== License
+Florian Frank <mailto:flori@ping.de>
+
+## License
 
 This is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License Version 2 as published by
