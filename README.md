@@ -32,11 +32,7 @@ To install this extension as a gem type
 
 `gem install amatch`
 
-<<<<<<< HEAD:README.rdoc
-== Examples
-=======
 ## Examples
->>>>>>> Added markdown README for ruby highlighting:README.md
 ~~~ruby
  require 'amatch'
  # => true
