@@ -11,7 +11,7 @@ if CONFIG['CC'] =~ /gcc/
 else
   $CFLAGS << ' -O3'
 end
-create_makefile 'amatch_ext' 
+create_makefile 'amatch_ext'
 
 # WTF, is this really the only way to get a decent output out of mkmf?
 mf = File.read 'Makefile'

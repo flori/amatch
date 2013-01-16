@@ -1,10 +1,9 @@
 require 'test/unit'
 require 'amatch'
-require 'test_levenshtein'
 
-class TestSellers < TestLevenshtein
+class TestSellers < Test::Unit::TestCase
   include Amatch
-  
+
   def setup
     @d        = 0.000001
     @empty    = Sellers.new('')

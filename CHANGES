@@ -1,3 +1,6 @@
+2013-01-16 (0.2.11)
+   * Include some fixes from Jason Colburne <jason@redbeardenterprises.com>.
+     Thx!
 2012-02-06 (0.2.10)
    * Use xfree instead of free to avoid (possible) problems.
 2011-11-14 (0.2.9)
