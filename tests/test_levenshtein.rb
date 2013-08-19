@@ -18,7 +18,6 @@ class TestLevenshtein < Test::Unit::TestCase
   def test_match
     assert_equal 4,     @simple.match('')
     assert_equal 0,     @simple.match('test')
-    assert_equal 0,     @simple.match('test')
     assert_equal 1,     @simple.match('testa')
     assert_equal 1,     @simple.match('atest')
     assert_equal 1,     @simple.match('teast')
