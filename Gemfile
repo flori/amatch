@@ -1,5 +1,5 @@
 # vim: set filetype=ruby et sw=2 ts=2:
 
-source :rubygems
+source 'httsp://rubygems.org'
 
 gemspec
