@@ -16,13 +16,14 @@ EOT
   executables << 'agrep.rb'
   bindir      'bin'
   test_dir    'tests'
-  ignore      '.*.sw[pon]', 'pkg', 'Gemfile.lock', '.AppleDouble'
+  ignore      '.*.sw[pon]', 'pkg', 'Gemfile.lock', '.AppleDouble', '.rbx'
   title       "#{name.camelize} - Approximate Matching"
   readme      'README.rdoc'
   require_paths %w[lib ext]
   dependency             'tins',      '~>0.3'
   development_dependency 'test-unit', '~>2.3'
   development_dependency 'utils'
+  development_dependency 'rake',      '~>10', '<11.0'
 
   install_library do
     libdir = CONFIG["sitelibdir"]
