@@ -20,7 +20,8 @@
  */
 
 
-static VALUE rb_mAmatch, rb_mAmatchStringMethods, rb_cLevenshtein, rb_cSellers, rb_cHamming,
+static VALUE rb_mAmatch, rb_mAmatchStringMethods, rb_cLevenshtein,
+             rb_cDamerauLevenshtein, rb_cSellers, rb_cHamming,
              rb_cPairDistance, rb_cLongestSubsequence, rb_cLongestSubstring,
              rb_cJaro, rb_cJaroWinkler;
 
@@ -230,9 +231,9 @@ DEF_ITERATE_STRINGS(JaroWinkler)
  */
 
 #define COMPUTE_LEVENSHTEIN_DISTANCE                                        \
-    for (i = 1, c = 0, p = 1; i <= a_len; i++) {                            \
+    for (i = 1; i <= a_len; i++) {                                          \
         c = i % 2;                      /* current row */                   \
-        p = (i + 1) % 2;                /* previous row */                  \
+        p = (i - 1) % 2;                /* previous row */                  \
         v[c][0] = i;                    /* first column */                  \
         for (j = 1; j <= b_len; j++) {                                      \
             /* Bellman's principle of optimality: */                        \
@@ -245,8 +246,6 @@ DEF_ITERATE_STRINGS(JaroWinkler)
             }                                                               \
             v[c][j] = weight;                                               \
         }                                                                   \
-        p = c;                                                              \
-        c = (c + 1) % 2;                                                    \
     }
 
 static VALUE Levenshtein_match(General *amatch, VALUE string)
@@ -269,7 +268,7 @@ static VALUE Levenshtein_match(General *amatch, VALUE string)
 
     COMPUTE_LEVENSHTEIN_DISTANCE
 
-    result = INT2FIX(v[p][b_len]);
+    result = INT2FIX(v[c][b_len]);
 
     xfree(v[0]);
     xfree(v[1]);
@@ -287,6 +286,7 @@ static VALUE Levenshtein_similar(General *amatch, VALUE string)
 
     Check_Type(string, T_STRING);
     DONT_OPTIMIZE
+
     if (a_len == 0 && b_len == 0) return rb_float_new(1.0);
     if (a_len == 0 || b_len == 0) return rb_float_new(0.0);
     v[0] = ALLOC_N(int, b_len + 1);
@@ -299,12 +299,14 @@ static VALUE Levenshtein_similar(General *amatch, VALUE string)
     COMPUTE_LEVENSHTEIN_DISTANCE
 
     if (b_len > a_len) {
-        result = rb_float_new(1.0 - ((double) v[p][b_len]) / b_len);
+        result = rb_float_new(1.0 - ((double) v[c][b_len]) / b_len);
     } else {
-        result = rb_float_new(1.0 - ((double) v[p][b_len]) / a_len);
+        result = rb_float_new(1.0 - ((double) v[c][b_len]) / a_len);
     }
+
     xfree(v[0]);
     xfree(v[1]);
+
     return result;
 }
 
@@ -327,7 +329,7 @@ static VALUE Levenshtein_search(General *amatch, VALUE string)
     COMPUTE_LEVENSHTEIN_DISTANCE
 
     for (i = 0, min = a_len; i <= b_len; i++) {
-        if (v[p][i] < min) min = v[p][i];
+        if (v[c][i] < min) min = v[c][i];
     }
 
     result = INT2FIX(min);
@@ -338,15 +340,143 @@ static VALUE Levenshtein_search(General *amatch, VALUE string)
     return result;
 }
 
+/*
+ * DamerauLevenshtein edit distances are computed here:
+ */
+
+#define COMPUTE_DAMERAU_LEVENSHTEIN_DISTANCE                                \
+    for (i = 1; i <= a_len; i++) {                                          \
+        c = i % 3;                      /* current row */                   \
+        p = (i - 1) % 3;                /* previous row */                  \
+        pp = (i - 2) % 3;               /* previos previous row */                  \
+        v[c][0] = i;                    /* first column */                  \
+        for (j = 1; j <= b_len; j++) {                                      \
+            /* Bellman's principle of optimality: */                        \
+            weight = v[p][j - 1] + (a_ptr[i - 1] == b_ptr[j - 1] ? 0 : 1);  \
+            if (weight > v[p][j] + 1) {                                     \
+                 weight = v[p][j] + 1;                                      \
+            }                                                               \
+            if (weight > v[c][j - 1] + 1) {                                 \
+                weight = v[c][j - 1] + 1;                                   \
+            }                                                               \
+            if (i > 2 && j > 2 && a_ptr[i - 1] == b_ptr[j - 2] && a_ptr[i - 2] == b_ptr[j - 1]) {\
+                if (weight > v[pp][j - 2]) {                                \
+                    weight = v[pp][j - 2] + (a_ptr[i - 1] == b_ptr[j - 1] ? 0 : 1);       \
+                }                                                           \
+            }                                                               \
+            v[c][j] = weight;                                               \
+        }                                                                   \
+    }
+
+static VALUE DamerauLevenshtein_match(General *amatch, VALUE string)
+{
+    VALUE result;
+    char *a_ptr, *b_ptr;
+    int a_len, b_len;
+    int *v[3], weight;
+    int  i, j, c, p, pp;
+
+    Check_Type(string, T_STRING);
+    DONT_OPTIMIZE
+
+    v[0] = ALLOC_N(int, b_len + 1);
+    v[1] = ALLOC_N(int, b_len + 1);
+    v[2] = ALLOC_N(int, b_len + 1);
+    for (i = 0; i <= b_len; i++) {
+        v[0][i] = i;
+        v[1][i] = i;
+        v[2][i] = i;
+    }
+
+    COMPUTE_DAMERAU_LEVENSHTEIN_DISTANCE
+
+    result = INT2FIX(v[c][b_len]);
+
+    xfree(v[0]);
+    xfree(v[1]);
+    xfree(v[2]);
+
+    return result;
+}
+
+static VALUE DamerauLevenshtein_similar(General *amatch, VALUE string)
+{
+    VALUE result;
+    char *a_ptr, *b_ptr;
+    int a_len, b_len;
+    int *v[3], weight;
+    int  i, j, c, p, pp;
+
+    Check_Type(string, T_STRING);
+    DONT_OPTIMIZE
+
+    if (a_len == 0 && b_len == 0) return rb_float_new(1.0);
+    if (a_len == 0 || b_len == 0) return rb_float_new(0.0);
+    v[0] = ALLOC_N(int, b_len + 1);
+    v[1] = ALLOC_N(int, b_len + 1);
+    v[2] = ALLOC_N(int, b_len + 1);
+    for (i = 0; i <= b_len; i++) {
+        v[0][i] = i;
+        v[1][i] = i;
+        v[2][i] = i;
+    }
+
+    COMPUTE_DAMERAU_LEVENSHTEIN_DISTANCE
+
+    if (b_len > a_len) {
+        result = rb_float_new(1.0 - ((double) v[c][b_len]) / b_len);
+    } else {
+        result = rb_float_new(1.0 - ((double) v[c][b_len]) / a_len);
+    }
+
+    xfree(v[0]);
+    xfree(v[1]);
+    xfree(v[2]);
+
+    return result;
+}
+
+static VALUE DamerauLevenshtein_search(General *amatch, VALUE string)
+{
+    VALUE result;
+    char *a_ptr, *b_ptr;
+    int a_len, b_len;
+    int *v[3], weight, min;
+    int  i, j, c, p, pp;
+
+    Check_Type(string, T_STRING);
+    DONT_OPTIMIZE
+
+    v[0] = ALLOC_N(int, b_len + 1);
+    v[1] = ALLOC_N(int, b_len + 1);
+    v[2] = ALLOC_N(int, b_len + 1);
+    MEMZERO(v[0], int, b_len + 1);
+    MEMZERO(v[1], int, b_len + 1);
+    MEMZERO(v[2], int, b_len + 1);
+
+    COMPUTE_DAMERAU_LEVENSHTEIN_DISTANCE
+
+    for (i = 0, min = a_len; i <= b_len; i++) {
+        if (v[c][i] < min) min = v[c][i];
+    }
+
+    result = INT2FIX(min);
+
+    xfree(v[0]);
+    xfree(v[1]);
+    xfree(v[2]);
+
+    return result;
+}
 
 /*
  * Sellers edit distances are computed here:
  */
 
 #define COMPUTE_SELLERS_DISTANCE                                            \
-    for (i = 1, c = 0, p = 1; i <= a_len; i++) {                            \
+    for (i = 1; i <= a_len; i++) {                                          \
         c = i % 2;                      /* current row */                   \
-        p = (i + 1) % 2;                /* previous row */                  \
+        p = (i - 1) % 2;                /* previous row */                  \
         v[c][0] = i * amatch->deletion; /* first column */                  \
         for (j = 1; j <= b_len; j++) {                                      \
             /* Bellman's principle of optimality: */                        \
@@ -361,7 +491,6 @@ static VALUE Levenshtein_search(General *amatch, VALUE string)
             v[c][j] = weight;                                               \
         }                                                                   \
         p = c;                                                              \
-        c = (c + 1) % 2;                                                    \
     }
 
 static VALUE Sellers_match(Sellers *amatch, VALUE string)
@@ -414,6 +543,7 @@ static VALUE Sellers_similar(Sellers *amatch, VALUE string)
 
     Check_Type(string, T_STRING);
     DONT_OPTIMIZE
+
     if (a_len == 0 && b_len == 0) return rb_float_new(1.0);
     if (a_len == 0 || b_len == 0) return rb_float_new(0.0);
     v[0] = ALLOC_N(double, b_len + 1);
@@ -470,7 +600,8 @@ static VALUE Sellers_search(Sellers *amatch, VALUE string)
 static VALUE PairDistance_match(PairDistance *amatch, VALUE string, VALUE regexp, int use_regexp)
 {
     double result;
-    VALUE tokens, string_tokens;
+    VALUE tokens;
+    PairArray *pair_array;
     PairArray *pattern_pair_array, *pair_array;
 
     Check_Type(string, T_STRING);
@@ -1663,6 +1794,17 @@ void Init_amatch_ext()
     rb_define_method(rb_cLevenshtein, "search", rb_Levenshtein_search, 1);
     rb_define_method(rb_cLevenshtein, "similar", rb_Levenshtein_similar, 1);
     rb_define_method(rb_mAmatchStringMethods, "levenshtein_similar", rb_str_levenshtein_similar, 1);
+
+    /* DamerauLevenshtein */
+    rb_cDamerauLevenshtein = rb_define_class_under(rb_mAmatch, "DamerauLevenshtein", rb_cObject);
+    rb_define_alloc_func(rb_cDamerauLevenshtein, rb_DamerauLevenshtein_s_allocate);
+    rb_define_method(rb_cDamerauLevenshtein, "initialize", rb_DamerauLevenshtein_initialize, 1);
+    rb_define_method(rb_cDamerauLevenshtein, "pattern", rb_General_pattern, 0);
+    rb_define_method(rb_cDamerauLevenshtein, "pattern=", rb_General_pattern_set, 1);
+    rb_define_method(rb_cDamerauLevenshtein, "match", rb_DamerauLevenshtein_match, 1);
+    rb_define_method(rb_cDamerauLevenshtein, "search", rb_DamerauLevenshtein_search, 1);
+    rb_define_method(rb_cDamerauLevenshtein, "similar", rb_DamerauLevenshtein_similar, 1);
+    rb_define_method(rb_mAmatchStringMethods, "damerau_levenshtein_similar", rb_str_damerau_levenshtein_similar, 1);
 
     /* Sellers */
     rb_cSellers = rb_define_class_under(rb_mAmatch, "Sellers", rb_cObject);
