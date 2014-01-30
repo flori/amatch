@@ -16,7 +16,7 @@ EOT
   executables << 'agrep.rb'
   bindir      'bin'
   test_dir    'tests'
-  ignore      '.*.sw[pon]', 'pkg', 'Gemfile.lock', '.AppleDouble', '.rbx'
+  ignore      '.*.sw[pon]', 'pkg', 'Gemfile.lock', '.AppleDouble', '.rbx', '.bundle'
   title       "#{name.camelize} - Approximate Matching"
   readme      'README.rdoc'
   require_paths %w[lib ext]
