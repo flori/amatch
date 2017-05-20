@@ -21,9 +21,8 @@ EOT
   readme      'README.rdoc'
   require_paths %w[lib ext]
   dependency             'tins',      '~>1.0'
-  development_dependency 'test-unit', '~>2.3'
-  development_dependency 'utils'
-  development_dependency 'rake',      '~>10', '<11.0'
+  development_dependency 'test-unit', '~>3.0'
+  licenses << 'GPL'
 
   install_library do
     libdir = CONFIG["sitelibdir"]
