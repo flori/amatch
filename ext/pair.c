@@ -72,6 +72,8 @@ void pair_print(Pair pair)
 
 void pair_array_destroy(PairArray *pair_array)
 {
-    xfree(pair_array->pairs);
+    if (pair_array->pairs) {
+        xfree(pair_array->pairs);
+    }
     xfree(pair_array);
 }
