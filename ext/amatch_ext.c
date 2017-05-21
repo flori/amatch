@@ -470,34 +470,32 @@ static VALUE Sellers_search(Sellers *amatch, VALUE string)
 static VALUE PairDistance_match(PairDistance *amatch, VALUE string, VALUE regexp, int use_regexp)
 {
     double result;
-    VALUE tokens;
-    PairArray *pair_array;
-    
+    VALUE tokens, string_tokens;
+    PairArray *pattern_pair_array, *pair_array;
+
     Check_Type(string, T_STRING);
     if (!NIL_P(regexp) || use_regexp) {
         tokens = rb_funcall(
             rb_str_new(amatch->pattern, amatch->pattern_len),
             id_split, 1, regexp
         );
-        if (!amatch->pattern_pair_array) {
-            amatch->pattern_pair_array = PairArray_new(tokens);
-        } else {
-            pair_array_reactivate(amatch->pattern_pair_array);
-        }
-        tokens = rb_funcall(string, id_split, 1, regexp);
-        pair_array = PairArray_new(tokens);
+        string_tokens = rb_funcall(string, id_split, 1, regexp);
     } else {
         VALUE tmp = rb_str_new(amatch->pattern, amatch->pattern_len);
         tokens = rb_ary_new4(1, &tmp);
-        if (!amatch->pattern_pair_array) {
-            amatch->pattern_pair_array = PairArray_new(tokens);
-        } else {
-            pair_array_reactivate(amatch->pattern_pair_array);
-        }
-        tokens = rb_ary_new4(1, &string);
-        pair_array = PairArray_new(tokens);
+        string_tokens = rb_ary_new4(1, &string);
     }
-    result = pair_array_match(amatch->pattern_pair_array, pair_array);
+
+    if (!amatch->pattern_pair_array) {
+        pattern_pair_array = PairArray_new(tokens);
+        amatch->pattern_pair_array = pattern_pair_array;
+    } else {
+        pattern_pair_array = amatch->pattern_pair_array;
+        pair_array_reactivate(amatch->pattern_pair_array);
+    }
+    pair_array = PairArray_new(string_tokens);
+
+    result = pair_array_match(pattern_pair_array, pair_array);
     pair_array_destroy(pair_array);
     return rb_float_new(result);
 }
