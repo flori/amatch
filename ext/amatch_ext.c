@@ -600,8 +600,7 @@ static VALUE Sellers_search(Sellers *amatch, VALUE string)
 static VALUE PairDistance_match(PairDistance *amatch, VALUE string, VALUE regexp, int use_regexp)
 {
     double result;
-    VALUE tokens;
-    PairArray *pair_array;
+    VALUE string_tokens, tokens;
     PairArray *pattern_pair_array, *pair_array;
 
     Check_Type(string, T_STRING);
@@ -996,16 +995,16 @@ static VALUE rb_Levenshtein_search(VALUE self, VALUE strings)
  /*
   * Document-class: Amatch::DamerauLevenshtein
   * XXX
-  * The DamerauLevenshtein edit distance is defined as the minimal costs involved to
-  * transform one string into another by using three elementary operations:
-  * deletion, insertion and substitution of a character. To transform "water"
-  * into "wine", for instance, you have to substitute "a" -> "i": "witer", "t"
-  * -> "n": "winer" and delete "r": "wine". The edit distance between "water"
-  * and "wine" is 3, because you have to apply three operations. The edit
-  * distance between "wine" and "wine" is 0 of course: no operation is
-  * necessary for the transformation -- they're already the same string. It's
-  * easy to see that more similar strings have smaller edit distances than
-  * strings that differ a lot.
+  * The DamerauLevenshtein edit distance is defined as the minimal costs
+  * involved to transform one string into another by using three elementary
+  * operations: deletion, insertion and substitution of a character. To
+  * transform "water" into "wine", for instance, you have to substitute "a" ->
+  * "i": "witer", "t" -> "n": "winer" and delete "r": "wine". The edit distance
+  * between "water" and "wine" is 3, because you have to apply three
+  * operations. The edit distance between "wine" and "wine" is 0 of course: no
+  * operation is necessary for the transformation -- they're already the same
+  * string. It's easy to see that more similar strings have smaller edit
+  * distances than strings that differ a lot.
   */
 
 DEF_RB_FREE(DamerauLevenshtein, General)
