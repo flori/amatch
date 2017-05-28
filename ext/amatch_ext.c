@@ -15,7 +15,7 @@
  * Document-method: pattern=
  *
  * call-seq: pattern=(pattern)
- * 
+ *
  * Sets the current pattern string of this instance to <code>pattern</code>.
  */
 
@@ -334,7 +334,7 @@ static VALUE Levenshtein_search(General *amatch, VALUE string)
 
     xfree(v[0]);
     xfree(v[1]);
-    
+
     return result;
 }
 
@@ -411,7 +411,7 @@ static VALUE Sellers_similar(Sellers *amatch, VALUE string)
             max_weight = amatch->deletion;
         }
     }
-    
+
     Check_Type(string, T_STRING);
     DONT_OPTIMIZE
     if (a_len == 0 && b_len == 0) return rb_float_new(1.0);
@@ -459,7 +459,7 @@ static VALUE Sellers_search(Sellers *amatch, VALUE string)
     result = rb_float_new(min);
     xfree(v[0]);
     xfree(v[1]);
-    
+
     return result;
 }
 
@@ -518,7 +518,7 @@ static VALUE Hamming_match(General *amatch, VALUE string)
     char *a_ptr, *b_ptr;
     int a_len, b_len;
     int i, result;
-    
+
     Check_Type(string, T_STRING);
     OPTIMIZE_TIME
     COMPUTE_HAMMING_DISTANCE
@@ -530,7 +530,7 @@ static VALUE Hamming_similar(General *amatch, VALUE string)
     char *a_ptr, *b_ptr;
     int a_len, b_len;
     int i, result;
-    
+
     Check_Type(string, T_STRING);
     OPTIMIZE_TIME
     if (a_len == 0 && b_len == 0) return rb_float_new(1.0);
@@ -570,7 +570,7 @@ static VALUE LongestSubsequence_match(General *amatch, VALUE string)
     char *a_ptr, *b_ptr;
     int a_len, b_len;
     int result, c, p, i, j, *l[2];
-    
+
     Check_Type(string, T_STRING);
     OPTIMIZE_TIME
 
@@ -584,7 +584,7 @@ static VALUE LongestSubsequence_similar(General *amatch, VALUE string)
     char *a_ptr, *b_ptr;
     int a_len, b_len;
     int result, c, p, i, j, *l[2];
-    
+
     Check_Type(string, T_STRING);
     OPTIMIZE_TIME
 
@@ -624,7 +624,7 @@ static VALUE LongestSubstring_match(General *amatch, VALUE string)
     char *a_ptr, *b_ptr;
     int a_len, b_len;
     int result, c, p, i, j, *l[2];
-    
+
     Check_Type(string, T_STRING);
     OPTIMIZE_TIME
     if (a_len == 0 || b_len == 0) return INT2FIX(0);
@@ -637,7 +637,7 @@ static VALUE LongestSubstring_similar(General *amatch, VALUE string)
     char *a_ptr, *b_ptr;
     int a_len, b_len;
     int result, c, p, i, j, *l[2];
-    
+
     Check_Type(string, T_STRING);
     OPTIMIZE_TIME
     if (a_len == 0 && b_len == 0) return rb_float_new(1.0);
@@ -769,7 +769,7 @@ static VALUE JaroWinkler_match(JaroWinkler *amatch, VALUE string)
  * Ruby API
  */
 
- /* 
+ /*
   * Document-class: Amatch::Levenshtein
   *
   * The Levenshtein edit distance is defined as the minimal costs involved to
@@ -802,7 +802,7 @@ DEF_CONSTRUCTOR(Levenshtein, General)
 
 /*
  * call-seq: match(strings) -> results
- * 
+ *
  * Uses this Amatch::Levenshtein instance to match Amatch::Levenshtein#pattern
  * against <code>strings</code>. It returns the number operations, the Sellers
  * distance. <code>strings</code> has to be either a String or an Array of
@@ -810,14 +810,14 @@ DEF_CONSTRUCTOR(Levenshtein, General)
  * Floats respectively.
  */
 static VALUE rb_Levenshtein_match(VALUE self, VALUE strings)
-{                                                                            
+{
     GET_STRUCT(General)
     return General_iterate_strings(amatch, strings, Levenshtein_match);
 }
 
 /*
  * call-seq: similar(strings) -> results
- * 
+ *
  * Uses this Amatch::Levenshtein instance to match  Amatch::Levenshtein#pattern
  * against <code>strings</code>, and compute a Levenshtein distance metric
  * number between 0.0 for very unsimilar strings and 1.0 for an exact match.
@@ -826,14 +826,14 @@ static VALUE rb_Levenshtein_match(VALUE self, VALUE strings)
  * respectively.
  */
 static VALUE rb_Levenshtein_similar(VALUE self, VALUE strings)
-{                                                                            
+{
     GET_STRUCT(General)
     return General_iterate_strings(amatch, strings, Levenshtein_similar);
 }
 
 /*
  * call-seq: levenshtein_similar(strings) -> results
- * 
+ *
  * If called on a String, this string is used as a Amatch::Levenshtein#pattern
  * to match against <code>strings</code>. It returns a Levenshtein distance
  * metric number between 0.0 for very unsimilar strings and 1.0 for an exact
@@ -849,7 +849,7 @@ static VALUE rb_str_levenshtein_similar(VALUE self, VALUE strings)
 
 /*
  * call-seq: search(strings) -> results
- * 
+ *
  * searches Amatch::Levenshtein#pattern in <code>strings</code> and returns the
  * edit distance (the sum of character operations) as a Fixnum value, by greedy
  * trimming prefixes or postfixes of the match. <code>strings</code> has
@@ -857,12 +857,105 @@ static VALUE rb_str_levenshtein_similar(VALUE self, VALUE strings)
  * <code>results</code> is either a Float or an Array of Floats respectively.
  */
 static VALUE rb_Levenshtein_search(VALUE self, VALUE strings)
-{                                                                            
+{
     GET_STRUCT(General)
     return General_iterate_strings(amatch, strings, Levenshtein_search);
 }
 
-/* 
+/*
+ * Document-class: Amatch::DamerauLevenshtein
+ * XXX
+ * The DamerauLevenshtein edit distance is defined as the minimal costs
+ * involved to transform one string into another by using three elementary
+ * operations: deletion, insertion and substitution of a character. To
+ * transform "water" into "wine", for instance, you have to substitute "a" ->
+ * "i": "witer", "t" -> "n": "winer" and delete "r": "wine". The edit distance
+ * between "water" and "wine" is 3, because you have to apply three
+ * operations. The edit distance between "wine" and "wine" is 0 of course: no
+ * operation is necessary for the transformation -- they're already the same
+ * string. It's easy to see that more similar strings have smaller edit
+ * distances than strings that differ a lot.
+ */
+
+DEF_RB_FREE(DamerauLevenshtein, General)
+
+/*
+ * call-seq: new(pattern)
+  * XXX
+ * Creates a new Amatch::DamerauLevenshtein instance from <code>pattern</code>.
+ */
+static VALUE rb_DamerauLevenshtein_initialize(VALUE self, VALUE pattern)
+{
+    GET_STRUCT(General)
+    General_pattern_set(amatch, pattern);
+    return self;
+}
+
+DEF_CONSTRUCTOR(DamerauLevenshtein, General)
+
+/*
+ * call-seq: match(strings) -> results
+ * XXX
+ * Uses this Amatch::DamerauLevenshtein instance to match Amatch::DamerauLevenshtein#pattern
+ * against <code>strings</code>. It returns the number operations, the Sellers
+ * distance. <code>strings</code> has to be either a String or an Array of
+ * Strings. The returned <code>results</code> is either a Float or an Array of
+ * Floats respectively.
+ */
+static VALUE rb_DamerauLevenshtein_match(VALUE self, VALUE strings)
+{
+    GET_STRUCT(General)
+    return General_iterate_strings(amatch, strings, DamerauLevenshtein_match);
+}
+
+/*
+ * call-seq: similar(strings) -> results
+ * XXX
+ * Uses this Amatch::DamerauLevenshtein instance to match  Amatch::DamerauLevenshtein#pattern
+ * against <code>strings</code>, and compute a DamerauLevenshtein distance metric
+ * number between 0.0 for very unsimilar strings and 1.0 for an exact match.
+ * <code>strings</code> has to be either a String or an Array of Strings. The
+ * returned <code>results</code> is either a Fixnum or an Array of Fixnums
+ * respectively.
+ */
+static VALUE rb_DamerauLevenshtein_similar(VALUE self, VALUE strings)
+{
+    GET_STRUCT(General)
+    return General_iterate_strings(amatch, strings, DamerauLevenshtein_similar);
+}
+
+/*
+ * call-seq: levenshtein_similar(strings) -> results
+ * XXX
+ * If called on a String, this string is used as a Amatch::DamerauLevenshtein#pattern
+ * to match against <code>strings</code>. It returns a DamerauLevenshtein distance
+ * metric number between 0.0 for very unsimilar strings and 1.0 for an exact
+ * match. <code>strings</code> has to be either a String or an Array of
+ * Strings. The returned <code>results</code> is either a Float or an Array of
+ * Floats respectively.
+ */
+static VALUE rb_str_damerau_levenshtein_similar(VALUE self, VALUE strings)
+{
+    VALUE amatch = rb_DamerauLevenshtein_new(rb_cDamerauLevenshtein, self);
+    return rb_DamerauLevenshtein_similar(amatch, strings);
+}
+
+/*
+ * call-seq: search(strings) -> results
+ * XXX
+ * searches Amatch::DamerauLevenshtein#pattern in <code>strings</code> and returns the
+ * edit distance (the sum of character operations) as a Fixnum value, by greedy
+ * trimming prefixes or postfixes of the match. <code>strings</code> has
+ * to be either a String or an Array of Strings. The returned
+ * <code>results</code> is either a Float or an Array of Floats respectively.
+ */
+static VALUE rb_DamerauLevenshtein_search(VALUE self, VALUE strings)
+{
+    GET_STRUCT(General)
+    return General_iterate_strings(amatch, strings, DamerauLevenshtein_search);
+}
+
+/*
  * Document-class: Amatch::Sellers
  *
  * The Sellers edit distance is very similar to the Levenshtein edit distance.
@@ -981,14 +1074,14 @@ DEF_CONSTRUCTOR(Sellers, Sellers)
  * Document-method: pattern=
  *
  * call-seq: pattern=(pattern)
- * 
+ *
  * Sets the current pattern string of this Amatch::Sellers instance to
  * <code>pattern</code>.
  */
 
 /*
  * call-seq: match(strings) -> results
- * 
+ *
  * Uses this Amatch::Sellers instance to match Sellers#pattern against
  * <code>strings</code>, while taking into account the given weights. It
  * returns the number of weighted character operations, the Sellers distance.
@@ -997,14 +1090,14 @@ DEF_CONSTRUCTOR(Sellers, Sellers)
  * respectively.
  */
 static VALUE rb_Sellers_match(VALUE self, VALUE strings)
-{                                                                            
+{
     GET_STRUCT(Sellers)
     return Sellers_iterate_strings(amatch, strings, Sellers_match);
 }
 
 /*
  * call-seq: similar(strings) -> results
- * 
+ *
  * Uses this Amatch::Sellers instance to match Amatch::Sellers#pattern
  * against <code>strings</code> (taking into account the given weights), and
  * compute a Sellers distance metric number between 0.0 for very unsimilar
@@ -1014,7 +1107,7 @@ static VALUE rb_Sellers_match(VALUE self, VALUE strings)
  * respectively.
  */
 static VALUE rb_Sellers_similar(VALUE self, VALUE strings)
-{                                                                            
+{
     GET_STRUCT(Sellers)
     return Sellers_iterate_strings(amatch, strings, Sellers_similar);
 }
@@ -1029,12 +1122,12 @@ static VALUE rb_Sellers_similar(VALUE self, VALUE strings)
  * <code>results</code> is either a Float or an Array of Floats respectively.
  */
 static VALUE rb_Sellers_search(VALUE self, VALUE strings)
-{                                                                            
+{
     GET_STRUCT(Sellers)
     return Sellers_iterate_strings(amatch, strings, Sellers_search);
 }
 
-/* 
+/*
  * Document-class: Amatch::PairDistance
  *
  * The pair distance between two strings is based on the number of adjacent
@@ -1045,7 +1138,7 @@ static VALUE rb_Sellers_search(VALUE self, VALUE strings)
  * are more dissimilar. The advantage of considering adjacent characters, is to
  * take account not only of the characters, but also of the character ordering
  * in the original strings.
- * 
+ *
  * This metric is very capable to find similarities in natural languages.
  * It is explained in more detail in Simon White's article "How to Strike a
  * Match", located at this url:
@@ -1072,7 +1165,7 @@ DEF_CONSTRUCTOR(PairDistance, PairDistance)
 
 /*
  * call-seq: match(strings, regexp = /\s+/) -> results
- * 
+ *
  * Uses this Amatch::PairDistance instance to match  PairDistance#pattern against
  * <code>strings</code>. It returns the pair distance measure, that is a
  * returned value of 1.0 is an exact match, partial matches are lower
@@ -1088,7 +1181,7 @@ DEF_CONSTRUCTOR(PairDistance, PairDistance)
  * Array of Floats respectively.
  */
 static VALUE rb_PairDistance_match(int argc, VALUE *argv, VALUE self)
-{                                                                            
+{
     VALUE result, strings, regexp = Qnil;
     int use_regexp;
     GET_STRUCT(PairDistance)
@@ -1146,7 +1239,7 @@ static VALUE rb_str_pair_distance_similar(int argc, VALUE *argv, VALUE self)
     }
 }
 
-/* 
+/*
  * Document-class: Amatch::Hamming
  *
  *  This class computes the Hamming distance between two strings.
@@ -1176,7 +1269,7 @@ DEF_CONSTRUCTOR(Hamming, General)
 
 /*
  * call-seq: match(strings) -> results
- * 
+ *
  * Uses this Amatch::Hamming instance to match Amatch::Hamming#pattern against
  * <code>strings</code>, that is compute the hamming distance between
  * <code>pattern</code> and <code>strings</code>. <code>strings</code> has to
@@ -1184,7 +1277,7 @@ DEF_CONSTRUCTOR(Hamming, General)
  * is either a Fixnum or an Array of Fixnums respectively.
  */
 static VALUE rb_Hamming_match(VALUE self, VALUE strings)
-{                                                                            
+{
     GET_STRUCT(General)
     return General_iterate_strings(amatch, strings, Hamming_match);
 }
@@ -1200,7 +1293,7 @@ static VALUE rb_Hamming_match(VALUE self, VALUE strings)
  * respectively.
  */
 static VALUE rb_Hamming_similar(VALUE self, VALUE strings)
-{                                                                            
+{
     GET_STRUCT(General)
     return General_iterate_strings(amatch, strings, Hamming_similar);
 }
@@ -1222,7 +1315,7 @@ static VALUE rb_str_hamming_similar(VALUE self, VALUE strings)
 }
 
 
-/* 
+/*
  * Document-class: Amatch::LongestSubsequence
  *
  *  This class computes the length of the longest subsequence common to two
@@ -1252,7 +1345,7 @@ DEF_CONSTRUCTOR(LongestSubsequence, General)
 
 /*
  * call-seq: match(strings) -> results
- * 
+ *
  * Uses this Amatch::LongestSubsequence instance to match
  * LongestSubsequence#pattern against <code>strings</code>, that is compute the
  * length of the longest common subsequence. <code>strings</code> has to be
@@ -1260,14 +1353,14 @@ DEF_CONSTRUCTOR(LongestSubsequence, General)
  * is either a Fixnum or an Array of Fixnums respectively.
  */
 static VALUE rb_LongestSubsequence_match(VALUE self, VALUE strings)
-{                                                                            
+{
     GET_STRUCT(General)
     return General_iterate_strings(amatch, strings, LongestSubsequence_match);
 }
 
 /*
  * call-seq: similar(strings) -> results
- * 
+ *
  * Uses this Amatch::LongestSubsequence instance to match
  * Amatch::LongestSubsequence#pattern against <code>strings</code>, and compute
  * a longest substring distance metric number between 0.0 for very unsimilar
@@ -1276,7 +1369,7 @@ static VALUE rb_LongestSubsequence_match(VALUE self, VALUE strings)
  * a Fixnum or an Array of Fixnums
  */
 static VALUE rb_LongestSubsequence_similar(VALUE self, VALUE strings)
-{                                                                            
+{
     GET_STRUCT(General)
     return General_iterate_strings(amatch, strings, LongestSubsequence_similar);
 }
@@ -1292,12 +1385,12 @@ static VALUE rb_LongestSubsequence_similar(VALUE self, VALUE strings)
  * is either a Float or an Array of Floats respectively.
  */
 static VALUE rb_str_longest_subsequence_similar(VALUE self, VALUE strings)
-{                                                                            
+{
     VALUE amatch = rb_LongestSubsequence_new(rb_cLongestSubsequence, self);
     return rb_LongestSubsequence_similar(amatch, strings);
 }
 
-/* 
+/*
  * Document-class: Amatch::LongestSubstring
  *
  * The longest common substring is the longest substring, that is part of
@@ -1308,7 +1401,7 @@ static VALUE rb_str_longest_subsequence_similar(VALUE self, VALUE strings)
  * The longest common substring between 'string' and 'string' is 'string'
  * again, thus the longest common substring length is 6. The longest common
  * substring between 'string' and 'storing' is 'ring', thus the longest common
- * substring length is 4. 
+ * substring length is 4.
  */
 
 DEF_RB_FREE(LongestSubstring, General)
@@ -1329,7 +1422,7 @@ DEF_CONSTRUCTOR(LongestSubstring, General)
 
 /*
  * call-seq: match(strings) -> results
- * 
+ *
  * Uses this Amatch::LongestSubstring instance to match
  * LongestSubstring#pattern against <code>strings</code>, that is compute the
  * length of the longest common substring. <code>strings</code> has to be
@@ -1344,7 +1437,7 @@ static VALUE rb_LongestSubstring_match(VALUE self, VALUE strings)
 
 /*
  * call-seq: similar(strings) -> results
- * 
+ *
  * Uses this Amatch::LongestSubstring instance to match
  * Amatch::LongestSubstring#pattern against <code>strings</code>, and compute a
  * longest substring distance metric number between 0.0 for very unsimilar
@@ -1370,11 +1463,11 @@ static VALUE rb_LongestSubstring_similar(VALUE self, VALUE strings)
  * is either a Float or an Array of Floats respectively.
  */
 static VALUE rb_str_longest_substring_similar(VALUE self, VALUE strings)
-{                                                                            
+{
     VALUE amatch = rb_LongestSubstring_new(rb_cLongestSubstring, self);
     return rb_LongestSubstring_similar(amatch, strings);
 }
-  
+
 /*
  * Document-class: Amatch::Jaro
  *
