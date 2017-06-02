@@ -600,8 +600,7 @@ static VALUE Sellers_search(Sellers *amatch, VALUE string)
 static VALUE PairDistance_match(PairDistance *amatch, VALUE string, VALUE regexp, int use_regexp)
 {
     double result;
-    VALUE tokens;
-    PairArray *pair_array;
+    VALUE string_tokens, tokens;
     PairArray *pattern_pair_array, *pair_array;
 
     Check_Type(string, T_STRING);
