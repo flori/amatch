@@ -1,0 +1,148 @@
+#! /usr/bin/env ruby
+
+require 'tins/go'
+include Tins::GO
+require 'tins/minimize'
+class Array
+  include Tins::Minimize
+end
+require 'amatch'
+require 'infobar'
+
+def usage
+  puts <<EOT
+Usage: #{File.basename($0)} [OPTIONS] FILE
+
+ -a ALGO     Amatch matching algorithm
+ -p LIMIT    more than p similarity to be a match
+ -R NUMBER   skip NUMBER mismatch for building ranges
+ -r NUMBER   minimum length to be counted as a range
+ -i          compute a PNG per file
+
+Repor$ bugs to <flori@ping.de>.
+EOT
+  exit 0
+end
+
+class FindDuplicates
+  def initialize(algo, p_lim, filename)
+    @algo, @p_lim, @filename = algo, p_lim, filename
+  end
+
+  attr_reader :filename
+
+  attr_reader :algo
+
+  attr_reader :p_lim
+
+  memoize method:
+  def lines
+    File.readlines(filename)
+  end
+
+  memoize method:
+  def matrix
+    result = lines.with_infobar(label: filename, output: STDERR).map do |l1|
+      +infobar
+      a = algo.new(l1)
+      r = a.similar(lines)
+      r.map! { |s| s >= p_lim ? ?1 : ?0 }
+      r.join
+    end
+    infobar.finish
+    infobar.newline
+    result
+  end
+
+  def pbm(output: $>)
+    output << <<HEADER
+P1
+#{matrix.size} #{matrix.size}
+HEADER
+    output << matrix.map { |line| line.each_char.to_a * ' ' } * ?\n
+    self
+  end
+
+  def png(output: $>)
+    IO.popen("pnmtopng", 'w+') do |conv|
+      pbm(output: conv)
+      conv.close_write
+      output.write(conv.read)
+    end
+    self
+  end
+
+  def create_image
+    suffix = Regexp.quote(File.extname(filename))
+    f = filename.sub(/(#{suffix}|)\z/, '.png')
+    File.open(f, 'wb') do |output|
+      png(output: output)
+      infobar.puts "Writing output to #{f.inspect}."
+    end
+    self
+  end
+
+  def similar_ranges(min_range: 3, skip_range: 0)
+    set = 0
+    ranges = { set => [] }
+    m = matrix
+    n = m.size
+    skip_count = 0
+    n.downto(1) do |h|
+      (n - h + 1).upto(n - 1) do |k|
+        i = k
+        j = k - (n - h + 1)
+        if m[i][j] == ?1
+          skip_count = 0
+          ranges[set] << [ i, j ]
+        elsif !ranges[set].empty? && skip_count < skip_range
+          skip_count += 1
+        else
+          skip_count = 0
+          ranges[set].empty? or ranges[set += 1] = []
+        end
+      end
+      skip_count = 0
+      ranges[set].empty? or ranges[set += 1] = []
+    end
+    ranges.each { |_, r|
+      r.flatten!
+      r.sort!
+      r.map! { |x| x + 1 }
+      r.minimize!
+      r.reject! { |s| s.size < min_range }
+    }.reject! { |_, r| r.empty? }
+    unions = []
+    while !ranges.empty?
+      _, r = ranges.first
+      equivalent = ranges.reject { |_, v| (v & r).empty? }
+      unions << equivalent.values.flatten.uniq
+      ranges.delete_if { |k, _| equivalent.keys.include?(k) }
+    end
+    unions.each do |r|
+      r.map! do |x|
+        "#{filename}:#{x.begin}-#{x.end}"
+      end
+    end
+    unions
+  end
+end
+
+opts = go 'a:p:R:r:ih'
+
+usage if opts[?h]
+algo       = Amatch.const_get(opts[?a] || 'Levenshtein')
+p_lim      = (opts[?p] || 0.95).to_f
+min_range  = (opts[?r] || 3).to_i
+skip_range = opts[?R].to_i
+ARGV.empty? and usage
+
+filenames = ARGV.inject([]) { |s, f| s.concat(Dir[f]) }
+for filename in filenames
+  finder = FindDuplicates.new(algo, p_lim, filename)
+  opts[?i] and finder.create_image
+  for s in finder.similar_ranges(min_range: min_range, skip_range: skip_range)
+    infobar.reset
+    puts s, ?\n
+  end
+end

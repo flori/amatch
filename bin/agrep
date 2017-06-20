@@ -15,15 +15,21 @@ end
 
 class Amatch::Levenshtein
   def search_relative(strings)
-    search(strings).to_f / pattern.size
+    if Array === strings
+      search(strings).map { |s| s.to_f / pattern.size }
+    else
+      search(strings).to_f / pattern.size
+    end
   end
 end
 
+$algorithm = 'Levenshtein'
 $distance = 1
 $mode = :search
 begin
   parser = GetoptLong.new
   options = [
+    [ '--algorithm',  '-a',  GetoptLong::REQUIRED_ARGUMENT ],
     [ '--distance',   '-d',  GetoptLong::REQUIRED_ARGUMENT ],
     [ '--relative',   '-r',  GetoptLong::NO_ARGUMENT ],
     [ '--verbose',    '-v',  GetoptLong::NO_ARGUMENT ],
@@ -33,6 +39,8 @@ begin
   parser.each_option do |name, arg|
     name = name.sub(/^--/, '')
     case name
+    when 'algorithm'
+      $algorithm = arg
     when 'distance'
       $distance = arg.to_f
     when 'relative'
@@ -48,7 +56,7 @@ rescue
 end
 pattern = ARGV.shift or usage('Pattern needed!', options)
 
-matcher = Amatch::Levenshtein.new(pattern)
+matcher = Amatch.const_get($algorithm).new(pattern)
 size = 0
 start = Time.new
 if ARGV.size > 0 then
@@ -56,9 +64,12 @@ if ARGV.size > 0 then
     File.stat(filename).file? or next
     size += File.size(filename)
     begin
-      File.open(filename, 'r').each_line do |line|
-        if matcher.__send__($mode, line) <= $distance
-          puts "#{filename}:#{line}"
+      File.open(filename, 'r').each_line.each_slice(1000) do |lines|
+        results = matcher.__send__($mode, lines) 
+        lines.zip(results) do |line, r|
+          if r <= $distance
+            puts "#{filename}:#{line}"
+          end
         end
       end
     rescue
@@ -66,10 +77,13 @@ if ARGV.size > 0 then
     end
   end
 else
-  STDIN.each_line do |line|
-    size += line.size
-    if matcher.__send__($mode, line) <= $distance
-      puts line
+  STDIN.each_line.each_slice(1000) do |lines|
+    size += lines.size
+    results = matcher.__send__($mode, lines)
+    lines.zip(results) do |line, r|
+      if r <= $distance
+        puts line
+      end
     end
   end
 end

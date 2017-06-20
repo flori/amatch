@@ -3,23 +3,6 @@
 #include <ctype.h>
 #include "common.h"
 
-/*
- * Document-method: pattern
- *
- * call-seq: pattern -> pattern string
- *
- * Returns the current pattern string of this instance.
- */
-
-/*
- * Document-method: pattern=
- *
- * call-seq: pattern=(pattern)
- *
- * Sets the current pattern string of this instance to <code>pattern</code>.
- */
-
-
 static VALUE rb_mAmatch, rb_mAmatchStringMethods, rb_cLevenshtein,
              rb_cDamerauLevenshtein, rb_cSellers, rb_cHamming,
              rb_cPairDistance, rb_cLongestSubsequence, rb_cLongestSubstring,
