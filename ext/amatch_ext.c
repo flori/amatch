@@ -331,7 +331,7 @@ static VALUE Levenshtein_search(General *amatch, VALUE string)
     for (i = 1; i <= a_len; i++) {                                          \
         c = i % 3;                      /* current row */                   \
         p = (i - 1) % 3;                /* previous row */                  \
-        pp = (i - 2) % 3;               /* previos previous row */                  \
+        pp = (i - 2) % 3;               /* previous previous row */         \
         v[c][0] = i;                    /* first column */                  \
         for (j = 1; j <= b_len; j++) {                                      \
             /* Bellman's principle of optimality: */                        \
