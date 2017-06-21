@@ -214,6 +214,8 @@ DEF_ITERATE_STRINGS(JaroWinkler)
  */
 
 #define COMPUTE_LEVENSHTEIN_DISTANCE                                        \
+    c = 0;                                                                  \
+    p = 0;                                                                  \
     for (i = 1; i <= a_len; i++) {                                          \
         c = i % 2;                      /* current row */                   \
         p = (i - 1) % 2;                /* previous row */                  \
@@ -328,6 +330,9 @@ static VALUE Levenshtein_search(General *amatch, VALUE string)
  */
 
 #define COMPUTE_DAMERAU_LEVENSHTEIN_DISTANCE                                \
+    c = 0;                                                                  \
+    p = 0;                                                                  \
+    pp = 0;                                                                 \
     for (i = 1; i <= a_len; i++) {                                          \
         c = i % 3;                      /* current row */                   \
         p = (i - 1) % 3;                /* previous row */                  \
@@ -457,6 +462,8 @@ static VALUE DamerauLevenshtein_search(General *amatch, VALUE string)
  */
 
 #define COMPUTE_SELLERS_DISTANCE                                            \
+    c = 0;                                                                  \
+    p = 0;                                                                  \
     for (i = 1; i <= a_len; i++) {                                          \
         c = i % 2;                      /* current row */                   \
         p = (i - 1) % 2;                /* previous row */                  \
