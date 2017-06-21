@@ -21,7 +21,6 @@ EOT
   readme      'README.rdoc'
   require_paths %w[lib ext]
   dependency             'tins',      '~>1.0'
-  dependency             'infobar'
   dependency             'mize'
   development_dependency 'test-unit', '~>3.0'
   licenses << 'GPL'

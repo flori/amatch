@@ -7,7 +7,12 @@ class Array
   include Tins::Minimize
 end
 require 'amatch'
-require 'infobar'
+begin
+  require 'infobar'
+rescue LoadError
+  warn "Please install gem infobar to run this executable!"
+  exit 1
+end
 
 def usage
   puts <<EOT
