@@ -18,10 +18,10 @@ EOT
   test_dir    'tests'
   ignore      '.*.sw[pon]', 'pkg', 'Gemfile.lock', '.AppleDouble', '.rbx', 'Makefile'
   title       "#{name.camelize} - Approximate Matching"
-  readme      'README.rdoc'
+  readme      'README.md'
   require_paths %w[lib ext]
   dependency             'tins',      '~>1.0'
   dependency             'mize'
   development_dependency 'test-unit', '~>3.0'
-  licenses << 'GPL'
+  licenses << 'Apache-2.0'
 end
