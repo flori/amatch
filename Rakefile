@@ -16,7 +16,8 @@ EOT
   executables << 'agrep' << 'dupfind'
   bindir      'bin'
   test_dir    'tests'
-  ignore      '.*.sw[pon]', 'pkg', 'Gemfile.lock', '.AppleDouble', '.rbx', 'Makefile'
+  ignore      '.*.sw[pon]', 'pkg', 'Gemfile.lock', '.AppleDouble', '.rbx',
+    'Makefile', '*.bundle', '*.o', '*.so'
   package_ignore '.all_images.yml', '.gitignore', 'VERSION'
   title       "#{name.camelize} - Approximate Matching"
   readme      'README.md'

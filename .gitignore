@@ -1,3 +1,6 @@
+*.bundle
+*.o
+*.so
 .*.sw[pon]
 .AppleDouble
 .rbx
