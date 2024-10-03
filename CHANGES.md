@@ -3,7 +3,7 @@
 ## 2022-05-15 v0.4.1
 
 * **Moved CI testing from Travis to All Images**
-	+ Updated configuration to use `all_images` instead of Travis for continuous integration testing.
+  + Updated configuration to use `all_images` instead of Travis for continuous integration testing.
 
 ## 2017-07-04 v0.4.0
 
