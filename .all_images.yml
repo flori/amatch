@@ -8,16 +8,12 @@ script: &script |-
   ruby -v
   echo -e "\e[0m"
   rm -f Gemfile.lock
-  gem install bundler
   bundle install
   bundle exec rake clobber test
 
 images:
+  ruby:3.4-alpine: *script
   ruby:3.3-alpine: *script
   ruby:3.2-alpine: *script
   ruby:3.1-alpine: *script
   ruby:3.0-alpine: *script
-  ruby:2.7-alpine: *script
-  ruby:2.6-alpine: *script
-  ruby:2.5-alpine: *script
-  ruby:2.4-alpine: *script
