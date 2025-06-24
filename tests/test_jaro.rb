@@ -11,6 +11,7 @@ class TestJaro < Test::Unit::TestCase
     @dwayne = Jaro.new('dwayne')
     @dixon  = Jaro.new('DIXON')
     @one    = Jaro.new('one')
+    @single = Jaro.new('a')
   end
 
   def test_case
@@ -25,5 +26,6 @@ class TestJaro < Test::Unit::TestCase
     assert_in_delta 0.822, @dwayne.match('DUANE'), D
     assert_in_delta 0.767, @dixon.match('DICKSONX'), D
     assert_in_delta 0.667, @one.match('orange'), D
+    assert_in_delta 1.0, @single.match('a')
   end
 end
