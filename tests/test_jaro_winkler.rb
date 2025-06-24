@@ -11,6 +11,7 @@ class TestJaroWinkler < Test::Unit::TestCase
     @dwayne = JaroWinkler.new('dwayne')
     @dixon  = JaroWinkler.new('DIXON')
     @one    = JaroWinkler.new("one")
+    @single = JaroWinkler.new("a")
   end
 
   def test_case
@@ -26,6 +27,7 @@ class TestJaroWinkler < Test::Unit::TestCase
     assert_in_delta 0.813, @dixon.match('DICKSONX'), D
     assert_in_delta 0, @one.match('two'), D
     assert_in_delta 0.700, @one.match('orange'), D
+    assert_in_delta 1.0, @single.match("a")
   end
 
   def test_scaling_factor
