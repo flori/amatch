@@ -791,7 +791,7 @@ static VALUE LongestSubstring_similar(General *amatch, VALUE string)
     }                                                                               \
     if (m == 0) {                                                                   \
         if(a_len == b_len && a_len == 1 && a_ptr[0] == b_ptr[0]) {                  \
-            result = 1.0;                                                             \
+            result = 1.0;                                                           \
         } else {                                                                    \
             result = 0.0;                                                           \
         }                                                                           \
