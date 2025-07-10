@@ -1,5 +1,12 @@
 # Changes
 
+## 2025-07-10 v0.4.2
+
+* Single-character identical strings now return a similarity score of `1.0`.
+  * Updated C extension to handle this edge case.
+  * Added tests for Jaro and Jaro-Winkler algorithms.
+  * Thx to Jared Nielson for the fix.
+
 ## 2022-05-15 v0.4.1
 
 * **Moved CI testing from Travis to All Images**
