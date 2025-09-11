@@ -1,5 +1,4 @@
-require 'test/unit'
-require 'amatch'
+require 'test_helper'
 
 class TestHamming < Test::Unit::TestCase
   include Amatch

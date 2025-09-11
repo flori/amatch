@@ -1,5 +1,4 @@
-require 'test/unit'
-require 'amatch'
+require 'test_helper'
 
 class TestLongestSubsequence < Test::Unit::TestCase
   include Amatch

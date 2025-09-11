@@ -1,5 +1,4 @@
-require 'test/unit'
-require 'amatch'
+require 'test_helper'
 
 class TestPairDistance < Test::Unit::TestCase
   include Amatch

@@ -1,0 +1,24 @@
+# vim: set ft=ruby:
+
+search do
+  prune_dirs /\A(\.svn|\.git|CVS|tmp|tags|coverage|pkg|doc|\.yardoc)\z/
+  skip_files /(\A\.|\.sw[pon]\z|\.(log|fnm|jpg|jpeg|png|pdf|svg)\z|tags|~\z)/i
+end
+
+discover do
+  prune_dirs /\A(\.svn|\.git|CVS|tmp|tags|coverage|pkg|doc|\.yardoc)\z/
+  skip_files /(\A\.|\.sw[pon]\z|\.log\z|~\z)/
+end
+
+strip_spaces do
+  prune_dirs /\A(\..*|CVS|pkg|doc|\.yardoc)\z/
+  skip_files /(\A\.|\.sw[pon]\z|\.log\z|~\z)/
+end
+
+probe do
+  test_framework :'test-unit'
+end
+
+ssh_tunnel do
+  terminal_multiplexer :tmux
+end
