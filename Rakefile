@@ -17,7 +17,7 @@ GemHadar do
   bindir      'bin'
   test_dir    'tests'
   ignore      '.*.sw[pon]', 'pkg', 'Gemfile.lock', '.AppleDouble', '.rbx',
-    'Makefile', '*.bundle', '*.o', '*.so', 'coverage'
+    'Makefile', '*.bundle', '*.o', '*.so', 'coverage', 'ext/amatch_ext*'
   package_ignore '.all_images.yml', '.gitignore', 'VERSION'
   title       "#{name.camelize} - Approximate Matching"
   readme      'README.md'

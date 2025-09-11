@@ -7,4 +7,5 @@
 Gemfile.lock
 Makefile
 coverage
+ext/amatch_ext*
 pkg
