@@ -1,5 +1,20 @@
 # Changes
 
+## 2025-09-11 v0.5.0
+
+- Added `yaml-dev` dependency and installed `bundler` and `gem_hadar` gems in `.all_images.yml`
+    - Modified script section in `.all_images.yml` to use `bundle update` with parallel installation
+    - Changed `fail_fast` setting in `.all_images.yml` from `yes` to `true`
+- Added `ext/amatch_ext*` to `.gitignore` and updated `Rakefile` to ignore these files during packaging
+- Added `coverage` to `.gitignore` and `Rakefile` ignore lists
+- Updated `tins` dependency from `~>1.0` to `~>1`
+- Added `debug` gem as a regular dependency
+- Added `simplecov` as a development dependency
+- Created `.utilsrc` configuration file for `utilrb` gem with specified settings
+- Replaced individual test requires with `require 'test_helper'` in all test files
+- Created `tests/test_helper.rb` to centralize test setup including SimpleCov and debug loading
+- The `gem_hadar/simplecov` gem is used for code coverage reporting
+
 ## 2025-07-10 v0.4.2
 
 * Single-character identical strings now return a similarity score of `1.0`.
