@@ -8,24 +8,29 @@ GemHadar do
   email       'flori@ping.de'
   homepage    "http://github.com/flori/#{name}"
   summary     'Approximate String Matching library'
-  description <<EOT
-Amatch is a library for approximate string matching and searching in strings.
-Several algorithms can be used to do this, and it's also possible to compute a
-similarity metric number between 0.0 and 1.0 for two given strings.
-EOT
+  description <<~EOT
+    Amatch is a library for approximate string matching and searching in strings.
+    Several algorithms can be used to do this, and it's also possible to compute a
+    similarity metric number between 0.0 and 1.0 for two given strings.
+  EOT
   executables << 'agrep' << 'dupfind'
   bindir      'bin'
   test_dir    'tests'
   ignore      '.*.sw[pon]', 'pkg', 'Gemfile.lock', '.AppleDouble', '.rbx',
-    'Makefile', '*.bundle', '*.o', '*.so'
+    'Makefile', '*.bundle', '*.o', '*.so', 'coverage'
   package_ignore '.all_images.yml', '.gitignore', 'VERSION'
   title       "#{name.camelize} - Approximate Matching"
   readme      'README.md'
   require_paths %w[lib ext]
-  dependency             'tins',      '~>1.0'
+
+  required_ruby_version '>=2.4'
+
+  dependency             'tins',      '~>1'
   dependency             'mize'
+  dependency             'debug'
   development_dependency 'test-unit', '~>3.0'
   development_dependency 'all_images'
-  required_ruby_version '>=2.4'
+  development_dependency 'simplecov'
+
   licenses << 'Apache-2.0'
 end

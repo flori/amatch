@@ -6,4 +6,5 @@
 .rbx
 Gemfile.lock
 Makefile
+coverage
 pkg
