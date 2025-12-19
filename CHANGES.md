@@ -1,5 +1,14 @@
 # Changes
 
+## 2025-12-19 v0.6.0
+
+- Moved the `debug` gem from regular dependencies to development dependencies
+  in `Rakefile` and updated `amatch.gemspec` accordingly
+- Added `openssl-dev` dependency and included `ruby:4.0-rc-alpine` image
+  configuration in `.all_images.yml`
+- Changed `bundle update` command to `bundle update --all` for improved
+  dependency management
+
 ## 2025-09-11 v0.5.0
 
 - Added `yaml-dev` dependency and installed `bundler` and `gem_hadar` gems in `.all_images.yml`
