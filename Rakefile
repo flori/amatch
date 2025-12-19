@@ -27,7 +27,7 @@ GemHadar do
 
   dependency             'tins',      '~>1'
   dependency             'mize'
-  dependency             'debug'
+  development_dependency 'debug'
   development_dependency 'test-unit', '~>3.0'
   development_dependency 'all_images'
   development_dependency 'simplecov'
