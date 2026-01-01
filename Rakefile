@@ -23,6 +23,10 @@ GemHadar do
   readme      'README.md'
   require_paths %w[lib ext]
 
+  changelog do
+    filename 'CHANGES.md'
+  end
+
   required_ruby_version '>=2.4'
 
   dependency             'tins',      '~>1'
