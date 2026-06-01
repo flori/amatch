@@ -10,16 +10,32 @@ static VALUE rb_mAmatch, rb_mAmatchStringMethods, rb_cLevenshtein,
 
 static ID id_split, id_to_f;
 
-#define GET_STRUCT(klass)                 \
-    klass *amatch;                        \
-    Data_Get_Struct(self, klass, amatch);
+#define GET_STRUCT(klass)                                           \
+    klass *amatch;                                                  \
+    TypedData_Get_Struct(self, klass, &rb_##klass##_data_type,      \
+        amatch);
+
+#define DEF_DATA_TYPE(type)                                         \
+static size_t rb_##type##_memsize(const void *ptr)                  \
+{                                                                   \
+    return ptr ? sizeof(type) : 0;                                  \
+}                                                                   \
+                                                                    \
+static const rb_data_type_t rb_##type##_data_type = {               \
+    "Amatch::" #type,                                               \
+    {NULL, rb_##type##_free, rb_##type##_memsize,},                 \
+    NULL, NULL, 0,                                                  \
+};
+
+#define MAKE_STRUCT(klass, type, amatch)                            \
+    TypedData_Make_Struct(klass, type, &rb_##type##_data_type,      \
+        amatch)
 
 #define DEF_CONSTRUCTOR(klass, type)                                    \
 static VALUE rb_##klass##_s_allocate(VALUE klass2)                      \
 {                                                                       \
     type *amatch;                                                       \
-    return Data_Make_Struct(klass2, type, NULL, rb_##klass##_free,      \
-        amatch);                                                        \
+    return MAKE_STRUCT(klass2, type, amatch);                           \
 }                                                                       \
 VALUE rb_##klass##_new(VALUE klass2, VALUE pattern)                     \
 {                                                                       \
@@ -28,8 +44,8 @@ VALUE rb_##klass##_new(VALUE klass2, VALUE pattern)                     \
     return obj;                                                         \
 }
 
-#define DEF_RB_FREE(klass, type)                            \
-static void rb_##klass##_free(void *ptr)                    \
+#define DEF_RB_FREE(type)                                   \
+static void rb_##type##_free(void *ptr)                     \
 {                                                           \
     type *amatch = ptr;                                     \
     MEMZERO(amatch->pattern, char, amatch->pattern_len);    \
@@ -150,6 +166,8 @@ typedef struct GeneralStruct {
     int         pattern_len;
 } General;
 
+DEF_RB_FREE(General)
+DEF_DATA_TYPE(General)
 DEF_PATTERN_ACCESSOR(General)
 DEF_ITERATE_STRINGS(General)
 
@@ -161,6 +179,8 @@ typedef struct SellersStruct {
     double      insertion;
 } Sellers;
 
+DEF_RB_FREE(Sellers)
+DEF_DATA_TYPE(Sellers)
 DEF_PATTERN_ACCESSOR(Sellers)
 DEF_ITERATE_STRINGS(Sellers)
 
@@ -177,6 +197,8 @@ typedef struct PairDistanceStruct {
     PairArray   *pattern_pair_array;
 } PairDistance;
 
+DEF_RB_FREE(PairDistance)
+DEF_DATA_TYPE(PairDistance)
 DEF_PATTERN_ACCESSOR(PairDistance)
 
 typedef struct JaroStruct {
@@ -185,6 +207,8 @@ typedef struct JaroStruct {
     int   ignore_case;
 } Jaro;
 
+DEF_RB_FREE(Jaro)
+DEF_DATA_TYPE(Jaro)
 DEF_PATTERN_ACCESSOR(Jaro)
 DEF_ITERATE_STRINGS(Jaro)
 
@@ -195,6 +219,8 @@ typedef struct JaroWinklerStruct {
     double scaling_factor;
 } JaroWinkler;
 
+DEF_RB_FREE(JaroWinkler)
+DEF_DATA_TYPE(JaroWinkler)
 DEF_PATTERN_ACCESSOR(JaroWinkler)
 DEF_ITERATE_STRINGS(JaroWinkler)
 
@@ -897,7 +923,6 @@ static VALUE JaroWinkler_match(JaroWinkler *amatch, VALUE string)
   * strings that differ a lot.
   */
 
-DEF_RB_FREE(Levenshtein, General)
 
 /*
  * call-seq: new(pattern)
@@ -990,7 +1015,6 @@ static VALUE rb_Levenshtein_search(VALUE self, VALUE strings)
  * distances than strings that differ a lot.
  */
 
-DEF_RB_FREE(DamerauLevenshtein, General)
 
 /*
  * call-seq: new(pattern)
@@ -1078,7 +1102,6 @@ static VALUE rb_DamerauLevenshtein_search(VALUE self, VALUE strings)
  * distance.
  */
 
-DEF_RB_FREE(Sellers, Sellers)
 
 /*
  * Document-method: substitution
@@ -1260,7 +1283,6 @@ static VALUE rb_Sellers_search(VALUE self, VALUE strings)
  * http://citeseer.lcs.mit.edu/gravano01using.html in "Using q-grams in a DBMS
  * for Approximate String Processing."
  */
-DEF_RB_FREE(PairDistance, PairDistance)
 
 /*
  * call-seq: new(pattern)
@@ -1364,7 +1386,6 @@ static VALUE rb_str_pair_distance_similar(int argc, VALUE *argv, VALUE self)
  *  counted as different characters.
  */
 
-DEF_RB_FREE(Hamming, General)
 
 /*
  * call-seq: new(pattern)
@@ -1440,7 +1461,6 @@ static VALUE rb_str_hamming_similar(VALUE self, VALUE strings)
  *  between "test" and "east" is "e", "s", "t" and the length of the
  *  sequence is 3.
  */
-DEF_RB_FREE(LongestSubsequence, General)
 
 /*
  * call-seq: new(pattern)
@@ -1517,7 +1537,6 @@ static VALUE rb_str_longest_subsequence_similar(VALUE self, VALUE strings)
  * substring length is 4.
  */
 
-DEF_RB_FREE(LongestSubstring, General)
 
 /*
  * call-seq: new(pattern)
@@ -1588,7 +1607,6 @@ static VALUE rb_str_longest_substring_similar(VALUE self, VALUE strings)
  * The Jaro metric computes the similarity between 0 (no match)
  * and 1 (exact match) by looking for matching and transposed characters.
  */
-DEF_RB_FREE(Jaro, Jaro)
 
 /*
  * Document-method: ignore_case
@@ -1665,7 +1683,6 @@ static VALUE rb_str_jaro_similar(VALUE self, VALUE strings)
  * It is a variant of the Jaro metric, with additional weighting towards
  * common prefixes.
  */
-DEF_RB_FREE(JaroWinkler, JaroWinkler)
 
 /*
  * Document-method: ignore_case
