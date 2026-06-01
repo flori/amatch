@@ -14,19 +14,12 @@ static ID id_split, id_to_f;
     klass *amatch;                        \
     Data_Get_Struct(self, klass, amatch);
 
-#define DEF_ALLOCATOR(type)                                             \
-static type *type##_allocate()                                          \
-{                                                                       \
-    type *obj = ALLOC(type);                                            \
-    MEMZERO(obj, type, 1);                                              \
-    return obj;                                                         \
-}
-
 #define DEF_CONSTRUCTOR(klass, type)                                    \
 static VALUE rb_##klass##_s_allocate(VALUE klass2)                      \
 {                                                                       \
-    type *amatch = type##_allocate();                                   \
-    return Data_Wrap_Struct(klass2, NULL, rb_##klass##_free, amatch);   \
+    type *amatch;                                                       \
+    return Data_Make_Struct(klass2, type, NULL, rb_##klass##_free,      \
+        amatch);                                                        \
 }                                                                       \
 VALUE rb_##klass##_new(VALUE klass2, VALUE pattern)                     \
 {                                                                       \
@@ -36,8 +29,9 @@ VALUE rb_##klass##_new(VALUE klass2, VALUE pattern)                     \
 }
 
 #define DEF_RB_FREE(klass, type)                            \
-static void rb_##klass##_free(type *amatch)                 \
+static void rb_##klass##_free(void *ptr)                    \
 {                                                           \
+    type *amatch = ptr;                                     \
     MEMZERO(amatch->pattern, char, amatch->pattern_len);    \
     xfree(amatch->pattern);                                 \
     MEMZERO(amatch, type, 1);                               \
@@ -156,7 +150,6 @@ typedef struct GeneralStruct {
     int         pattern_len;
 } General;
 
-DEF_ALLOCATOR(General)
 DEF_PATTERN_ACCESSOR(General)
 DEF_ITERATE_STRINGS(General)
 
@@ -168,7 +161,6 @@ typedef struct SellersStruct {
     double      insertion;
 } Sellers;
 
-DEF_ALLOCATOR(Sellers)
 DEF_PATTERN_ACCESSOR(Sellers)
 DEF_ITERATE_STRINGS(Sellers)
 
@@ -185,7 +177,6 @@ typedef struct PairDistanceStruct {
     PairArray   *pattern_pair_array;
 } PairDistance;
 
-DEF_ALLOCATOR(PairDistance)
 DEF_PATTERN_ACCESSOR(PairDistance)
 
 typedef struct JaroStruct {
@@ -194,7 +185,6 @@ typedef struct JaroStruct {
     int   ignore_case;
 } Jaro;
 
-DEF_ALLOCATOR(Jaro)
 DEF_PATTERN_ACCESSOR(Jaro)
 DEF_ITERATE_STRINGS(Jaro)
 
@@ -205,7 +195,6 @@ typedef struct JaroWinklerStruct {
     double scaling_factor;
 } JaroWinkler;
 
-DEF_ALLOCATOR(JaroWinkler)
 DEF_PATTERN_ACCESSOR(JaroWinkler)
 DEF_ITERATE_STRINGS(JaroWinkler)
 
