@@ -1,124 +1,181 @@
-# amatch - Approximate Matching Extension for Ruby
+# amatch - Approximate Matching Extension for Ruby 📏
 
-## Description
+## Description 📝
 
-This is a collection of classes that can be used for Approximate
-matching, searching, and comparing of Strings. They implement algorithms
-that compute the Levenshtein edit distance, Sellers edit distance, the
-Hamming distance, the longest common subsequence length, the longest common
-substring length, the pair distance metric, the Jaro-Winkler metric.
+`amatch` is a high-performance collection of classes used for approximate
+matching, searching, and comparing strings. It provides an efficient Ruby
+interface to several industry-standard algorithms for calculating edit distance
+and string similarity.
 
-## Installation
+## Supported Algorithms 🧩
 
-To install this extension as a gem type
+The library implements a wide array of metrics to suit different matching needs:
 
- # gem install amatch
+*   **Levenshtein Distance**: The classic "edit distance" (insertions,
+    deletions, substitutions).
+*   **Sellers Algorithm**: A variation of Levenshtein optimized for searching a
+    pattern within a longer text.
+*   **Damerau-Levenshtein**: Similar to Levenshtein but considers
+    transpositions of two adjacent characters as a single edit.
+*   **Hamming Distance**: Measures the number of positions at which
+    corresponding symbols are different (only for strings of equal length).
+*   **Jaro-Winkler**: A metric geared towards short strings like names, giving
+    more weight to prefix matches.
+*   **Pair Distance**: A flexible distance metric based on character pairs
+    (also available as `Amatch::DiceCoefficient`). Unlike set-based measures,
+    this implementation uses multisets, meaning it is sensitive to the frequency
+    of repeated character pairs.
+*   **Longest Common Subsequence/Substring**: Finds the longest shared
+    sequences between two strings.
 
-into the shell.
+## Installation 📦
 
-## Download
+You can install the extension as a gem:
 
-The homepage of this library is located at
+```shell
+gem install amatch
+```
 
-* https://github.com/flori/amatch
+Alternatively, if you prefer manual installation:
 
-## Examples
+```shell
+ruby install.rb
+# or
+rake install
+```
 
-    require 'amatch'
-    # => true
-    include Amatch
-    # => Object
-    
-    m = Sellers.new("pattern")
-    # => #<Amatch::Sellers:0x40366324>
-    m.match("pattren")
-    # => 2.0
-    m.substitution = m.insertion = 3
-    # => 3
-    m.match("pattren")
-    # => 4.0
-    m.reset_weights
-    # => #<Amatch::Sellers:0x40366324>
-    m.match(["pattren","parent"])
-    # => [2.0, 4.0]
-    m.search("abcpattrendef")
-    # => 2.0
-    
-    m = Levenshtein.new("pattern")
-    # => #<Amatch::Levenshtein:0x4035919c>
-    m.match("pattren")
-    # => 2
-    m.search("abcpattrendef")
-    # => 2
-    "pattern language".levenshtein_similar("language of patterns")
-    # => 0.2
-    
-    m = Amatch::DamerauLevenshtein.new("pattern")
-    # => #<Amatch::DamerauLevenshtein:0x007fc3483dd278>
-    m.match("pattren")
-    # => 1
-    "pattern language".damerau_levenshtein_similar("language of patterns")
-    # => 0.19999999999999996
-    
-    m = Hamming.new("pattern")
-    # => #<Amatch::Hamming:0x40350858>
-    m.match("pattren")
-    # => 2
-    "pattern language".hamming_similar("language of patterns")
-    # => 0.1
-    
-    m = PairDistance.new("pattern")
-    # => #<Amatch::PairDistance:0x40349be8>
-    m.match("pattr en")
-    # => 0.545454545454545
-    m.match("pattr en", nil)
-    # => 0.461538461538462
-    m.match("pattr en", /t+/)
-    # => 0.285714285714286
-    "pattern language".pair_distance_similar("language of patterns")
-    # => 0.928571428571429
-    
-    m = LongestSubsequence.new("pattern")
-    # => #<Amatch::LongestSubsequence:0x4033e900>
-    m.match("pattren")
-    # => 6
-    "pattern language".longest_subsequence_similar("language of patterns")
-    # => 0.4
-    
-    m = LongestSubstring.new("pattern")
-    # => #<Amatch::LongestSubstring:0x403378d0>
-    m.match("pattren")
-    # => 4
-    "pattern language".longest_substring_similar("language of patterns")
-    # => 0.4
-   
-    m = Jaro.new("pattern")
-    # => #<Amatch::Jaro:0x363b70>
-    m.match("paTTren")
-    # => 0.952380952380952
-    m.ignore_case = false
-    m.match("paTTren")
-    # => 0.742857142857143
-    "pattern language".jaro_similar("language of patterns")
-    # => 0.672222222222222
-   
-    m = JaroWinkler.new("pattern")
-    # #<Amatch::JaroWinkler:0x3530b8>
-    m.match("paTTren")
-    # => 0.971428571712403
-    m.ignore_case = false
-    m.match("paTTren")
-    # => 0.79428571505206
-    m.scaling_factor = 0.05
-    m.match("pattren")
-    # => 0.961904762046678
-    "pattern language".jarowinkler_similar("language of patterns")
-    # => 0.672222222222222
+## Usage 🛠️
 
-## Author
+### Basic Setup
 
-Florian Frank mailto:flori@ping.de
+To get started, simply require the library and include the `Amatch` module to
+add similarity methods directly to the `String` class.
 
-## License
+```ruby
+require 'amatch'
+include Amatch
+```
+
+### Edit Distance Algorithms 📉
+
+These algorithms return the "cost" to transform one string into another. Lower
+values indicate higher similarity.
+
+#### Levenshtein & Damerau-Levenshtein
+
+```ruby
+# Standard Levenshtein
+m = Levenshtein.new("pattern")
+m.match("pattren") # => 2
+"pattern language".levenshtein_similar("language of patterns") # => 0.2
+
+# Damerau-Levenshtein (handles transpositions)
+m = Amatch::DamerauLevenshtein.new("pattern")
+m.match("pattren") # => 1
+"pattern language".damerau_levenshtein_similar("language of patterns") # => 0.2
+```
+
+#### Sellers (Pattern Searching)
+
+Sellers is particularly useful for finding the best match of a pattern within a
+larger body of text.
+
+```ruby
+m = Sellers.new("pattern")
+m.match("pattren") # => 2.0
+
+# You can customize weights for different edit types
+m.substitution = m.insertion = 3
+m.match("pattren") # => 4.0
+
+m.reset_weights
+m.search("abcpattrendef") # => 2.0
+```
+
+#### Hamming Distance
+
+Used primarily for strings of equal length to count substitutions.
+
+```ruby
+m = Hamming.new("pattern")
+m.match("pattren") # => 2
+"pattern language".hamming_similar("language of patterns") # => 0.1
+```
+
+### Similarity Metrics 📈
+
+These algorithms typically return a score between `0.0` and `1.0`, where `1.0`
+is a perfect match.
+
+#### Jaro-Winkler
+
+Highly effective for record linkage and matching names.
+
+```ruby
+m = JaroWinkler.new("pattern")
+m.match("paTTren") # => 0.9714...
+m.ignore_case = false
+m.match("paTTren") # => 0.7942...
+
+# Custom scaling factor for prefix bonus
+m.scaling_factor = 0.05
+m.match("pattren") # => 0.9619...
+
+"pattern language".jarowinkler_similar("language of patterns") # => 0.6722...
+```
+
+#### Jaro
+
+The base metric for the Winkler variation.
+
+```ruby
+m = Jaro.new("pattern")
+m.match("paTTren") # => 0.9523...
+"pattern language".jaro_similar("language of patterns") # => 0.6722...
+```
+
+#### Other Metrics (Pair Distance, LCS, Longest Substring)
+
+```ruby
+# Pair Distance
+# Note: This implementation uses multisets, meaning it considers character 
+# frequencies rather than just unique pairs.
+m = PairDistance.new("pattern")
+m.match("pattr en") # => 0.5454...
+
+# Pro Tip: Pass a regex as the second argument to match based on tokens
+#  (e.g., words) rather than individual characters. This is particularly
+# useful for natural language.
+m.match("language of patterns", /\s+/)
+"pattern language".pair_distance_similar("language of patterns", /\s+/) # => 0.9285...
+
+# Longest Common Subsequence
+m = LongestSubsequence.new("pattern")
+m.match("pattren") # => 6
+"pattern language".longest_subsequence_similar("language of patterns") # => 0.4
+
+# Longest Common Substring
+m = LongestSubstring.new("pattern")
+m.match("pattren") # => 4
+"pattern language".longest_substring_similar("language of patterns") # => 0.4
+```
+
+## Performance ⚡
+
+`amatch` is implemented as a C extension to ensure maximum throughput when
+processing large datasets or complex string comparisons.
+
+![performance](http://cs304915.userapi.com/v304915401/5c97/BAzazF5E4Fo.jpg)
+
+## Download 📥
+
+The homepage of this library is located at:
+* [https://github.com/flori/amatch](https://github.com/flori/amatch)
+
+## Author 👨‍💻
+
+[Florian Frank](mailto:flori@ping.de)
+
+## License 📄
 
 Apache License, Version 2.0 – See the COPYING file in the source archive.
