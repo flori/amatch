@@ -1,15 +1,30 @@
 dockerfile: |-
   RUN apk add --no-cache build-base yaml-dev git openssl-dev
-  #RUN gem update --system
   RUN gem install bundler gem_hadar
 
 script: &script |-
   echo -e "\e[1m"
   ruby -v
   echo -e "\e[0m"
-  bundle update --all
   bundle install --jobs=$(getconf _NPROCESSORS_ONLN)
-  rake clobber test
+  bundle exec rake clobber test
+
+before: |-
+  echo 🏁 Preparing…
+  echo Deleting Gemfile.lock
+  rm -f Gemfile.lock
+
+after: |-
+  if [[ "$RESULT" = "1" ]]
+  then
+    echo 😵 Some tests failed!
+  else
+    echo 🥳 All tests passed!
+  fi
+  bundle install --jobs=$(getconf _NPROCESSORS_ONLN)
+  bundle exec rake clobber
+  echo Deleting Gemfile.lock
+  rm -f Gemfile.lock
 
 fail_fast: true
 
