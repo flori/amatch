@@ -1,5 +1,29 @@
 # Changes
 
+## 2026-06-05 v0.7.0
+
+### Added
+- Improved `README.md` with a project roadmap, better structure, and technical
+  clarifications.
+- Documented the `Amatch::DiceCoefficient` alias for `PairDistance`.
+- Clarified that `PairDistance` utilizes multisets for frequency-sensitive
+  matching.
+- Added advanced usage examples for regex tokenization in `PairDistance#match`.
+- Added a `changelog` configuration block to the `Rakefile` targeting
+  `CHANGES.md` to automate release documentation.
+
+### Changed
+
+- Updated matcher structs to use `TypedData_Make_Struct` and
+  `TypedData_Get_Struct`, removing dependency on deprecated `Data_*` accessors.
+- Switched matcher allocation to `Data_Make_Struct` to ensure Ruby manages
+  memory immediately upon object creation and prevent buffer leaks.
+- Standardized the CI test runner to use `bundle exec rake clobber test`.
+- Updated CI configuration in `.all_images.yml` with hooks to remove `Gemfile.lock` to prevent conflicts between macOS and Alpine Linux.
+- Added `.envrc` to export `OLLAMA_CHAT_TOOLS_TEST_RUNNER`.
+- Updated the Ruby version used in CI from **4.0-rc-alpine** to **4.0-alpine**.
+- Updated `amatch.gemspec` configuration.
+
 ## 2025-12-19 v0.6.0
 
 - Moved the `debug` gem from regular dependencies to development dependencies
