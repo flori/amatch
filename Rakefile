@@ -1,5 +1,3 @@
-# vim: set filetype=ruby et sw=2 ts=2:
-
 require 'gem_hadar'
 
 GemHadar do
